@@ -17,6 +17,7 @@ type
 
   TCodeFileStatistics = record
     FileName: string;
+    ParseError: string;
 
     LineCodeCount,
     CommentLineCount,

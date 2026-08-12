@@ -9,7 +9,7 @@ type
   TSaveServiceFileFactory = record
   public
     class function CreateFileJson(const FileName: string): ICodeAnalyzerSaveMetricsService; static;
-    class function CreateDatabase(const VersionCode: string; const VersionDate: TDateTime): ICodeAnalyzerSaveMetricsService; static;
+    class function CreateDatabase(const VersionCode: string; const VersionDate: TDateTime; const IniConfigFile: string = ''): ICodeAnalyzerSaveMetricsService; static;
   end;
 
 implementation
@@ -33,8 +33,9 @@ type
   private
     FVersionCode: string;
     FVersionDate: TDateTime;
+    FIniConfigFile: string;
   public
-    constructor Create(const VersionCode: string; const VersionDate: TDateTime);
+    constructor Create(const VersionCode: string; const VersionDate: TDateTime; const IniConfigFile: string = '');
     procedure Save(const CodeStatistics: TCodeStatistics);
   end;
 
@@ -107,9 +108,9 @@ end;
 
 { TSaveServiceFileFactory }
 
-class function TSaveServiceFileFactory.CreateDatabase(const VersionCode: string; const VersionDate: TDateTime): ICodeAnalyzerSaveMetricsService;
+class function TSaveServiceFileFactory.CreateDatabase(const VersionCode: string; const VersionDate: TDateTime; const IniConfigFile: string): ICodeAnalyzerSaveMetricsService;
 begin
-  Result := TCodeAnalyzerSaveMetricsServiceDatabase.Create(VersionCode, VersionDate);
+  Result := TCodeAnalyzerSaveMetricsServiceDatabase.Create(VersionCode, VersionDate, IniConfigFile);
 end;
 
 class function TSaveServiceFileFactory.CreateFileJson(const FileName: string): ICodeAnalyzerSaveMetricsService;
@@ -119,10 +120,11 @@ end;
 
 { TCodeAnalyzerSaveMetricsServiceDatabase }
 
-constructor TCodeAnalyzerSaveMetricsServiceDatabase.Create(const VersionCode: string; const VersionDate: TDateTime);
+constructor TCodeAnalyzerSaveMetricsServiceDatabase.Create(const VersionCode: string; const VersionDate: TDateTime; const IniConfigFile: string);
 begin
   FVersionCode := VersionCode;
   FVersionDate := VersionDate;
+  FIniConfigFile := IniConfigFile;
 end;
 
 procedure TCodeAnalyzerSaveMetricsServiceDatabase.Save(const CodeStatistics: TCodeStatistics);
