@@ -23,6 +23,7 @@ object FormMainMetrics: TFormMainMetrics
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 1018
     object lblTitle: TLabel
       Left = 20
       Top = 14
@@ -62,6 +63,7 @@ object FormMainMetrics: TFormMainMetrics
     Color = 16316668
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 1018
     object lblTargetPath: TLabel
       Left = 20
       Top = 72
@@ -140,7 +142,7 @@ object FormMainMetrics: TFormMainMetrics
       Left = 200
       Top = 69
       Width = 665
-      Height = 25
+      Height = 23
       TabOrder = 1
     end
     object btnBrowseTarget: TButton
@@ -170,12 +172,13 @@ object FormMainMetrics: TFormMainMetrics
     ActivePage = tsProjects
     Align = alTop
     TabOrder = 2
+    ExplicitWidth = 1018
     object tsProjects: TTabSheet
       Caption = 'Projetos (.dproj) / Presets'
       object lblProjectsHelp: TLabel
         Left = 16
         Top = 6
-        Width = 245
+        Width = 242
         Height = 15
         Caption = 'Projetos (.dproj) a serem analisados no grupo:'
       end
@@ -184,7 +187,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 24
         Width = 730
         Height = 82
-        ItemHeight = 17
+        ItemHeight = 15
         TabOrder = 0
       end
       object btnSelectAllProjects: TButton
@@ -433,12 +436,13 @@ object FormMainMetrics: TFormMainMetrics
     Color = 16316668
     ParentBackground = False
     TabOrder = 3
+    ExplicitWidth = 1018
     object btnExecute: TButton
       Left = 16
       Top = 10
       Width = 988
       Height = 40
-      Caption = 'EXECUTAR AN'#193'LISE EST'#193'TICA DE C'#243'DIGO'
+      Caption = 'EXECUTAR AN'#193'LISE EST'#193'TICA DE C'#211'DIGO'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -14
@@ -456,6 +460,7 @@ object FormMainMetrics: TFormMainMetrics
     Height = 6
     Align = alTop
     TabOrder = 4
+    ExplicitWidth = 1018
   end
   object pgcResults: TPageControl
     Left = 0
@@ -465,6 +470,8 @@ object FormMainMetrics: TFormMainMetrics
     ActivePage = tsFiles
     Align = alClient
     TabOrder = 5
+    ExplicitWidth = 1018
+    ExplicitHeight = 272
     object tsFiles: TTabSheet
       Caption = 'Lista de Arquivos Fontes Analisados'
       object lsvFiles: TListView
@@ -509,6 +516,8 @@ object FormMainMetrics: TFormMainMetrics
     Color = clWhite
     ParentBackground = False
     TabOrder = 6
+    ExplicitTop = 658
+    ExplicitWidth = 1018
     object pnlKpiLoc: TPanel
       Left = 16
       Top = 12
@@ -699,6 +708,8 @@ object FormMainMetrics: TFormMainMetrics
     Top = 85
   end
   object selectFolderDialog: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <>
     Options = [fdoPickFolders]
     Left = 835
     Top = 85

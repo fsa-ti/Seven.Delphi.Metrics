@@ -25,6 +25,58 @@ type
 
 implementation
 
+uses
+  Winapi.msxml;
+
+function LoadFileTextSafely(const AFileName: string): string;
+var
+  Bytes: TBytes;
+  Encoding: TEncoding;
+begin
+  if not TFile.Exists(AFileName) then
+    Exit('');
+
+  Bytes := TFile.ReadAllBytes(AFileName);
+  if Length(Bytes) = 0 then
+    Exit('');
+
+  Encoding := nil;
+  TEncoding.GetBufferEncoding(Bytes, Encoding, TEncoding.UTF8);
+  if Encoding = nil then
+    Encoding := TEncoding.UTF8;
+
+  try
+    Result := Encoding.GetString(Bytes);
+  except
+    try
+      Result := TEncoding.ANSI.GetString(Bytes);
+    except
+      Result := TEncoding.Default.GetString(Bytes);
+    end;
+  end;
+
+  if (Length(Result) > 0) and (Result[1] = #$FEFF) then
+    Delete(Result, 1, 1);
+end;
+
+procedure LoadXMLSafely(const XMLDoc: IXMLDocument; const AFileName: string);
+var
+  DOM2: IXMLDOMDocument2;
+  Content: string;
+begin
+  Content := LoadFileTextSafely(AFileName);
+  XMLDoc.Active := True;
+  if Supports(XMLDoc.DOMDocument, IXMLDOMDocument2, DOM2) then
+  begin
+    try
+      DOM2.setProperty('MaxElementDepth', 0);
+    except
+    end;
+  end;
+  if Content <> '' then
+    XMLDoc.LoadFromXML(Content);
+end;
+
 class function TProjectParser.ExtractProjectFiles(const AProjectPath: string): TArray<string>;
 begin
   if not TFile.Exists(AProjectPath) then
@@ -100,8 +152,7 @@ begin
       XMLDoc := TXMLDocument.Create(nil);
       XMLDoc.Options := [];
       XMLDoc.ParseOptions := [poPreserveWhiteSpace];
-      XMLDoc.FileName := ADprojFile;
-      XMLDoc.Active := True;
+      LoadXMLSafely(XMLDoc, ADprojFile);
 
       ExtractNodesInclude(XMLDoc, '//*[local-name()="DCCReference"]', ProjectDir, FileList);
       ExtractNodesInclude(XMLDoc, '//*[local-name()="Compile"]', ProjectDir, FileList);
@@ -147,8 +198,7 @@ begin
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Options := [];
     XMLDoc.ParseOptions := [poPreserveWhiteSpace];
-    XMLDoc.FileName := AGroupProjFile;
-    XMLDoc.Active := True;
+    LoadXMLSafely(XMLDoc, AGroupProjFile);
 
     // Extract project references in groupproj
     ExtractNodesInclude(XMLDoc, '//*[local-name()="Projects"]/*[local-name()="Project"]', GroupDir, DprojSet);
@@ -193,8 +243,7 @@ begin
     XMLDoc := TXMLDocument.Create(nil);
     XMLDoc.Options := [];
     XMLDoc.ParseOptions := [poPreserveWhiteSpace];
-    XMLDoc.FileName := AGroupProjFile;
-    XMLDoc.Active := True;
+    LoadXMLSafely(XMLDoc, AGroupProjFile);
 
     ExtractNodesInclude(XMLDoc, '//*[local-name()="Projects"]/*[local-name()="Project"]', GroupDir, DprojSet);
     ExtractNodesInclude(XMLDoc, '//*[local-name()="Projects"]', GroupDir, DprojSet);

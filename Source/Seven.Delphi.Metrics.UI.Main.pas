@@ -1,4 +1,4 @@
-unit Seven.Delphi.Metrics.UI.Main;
+﻿unit Seven.Delphi.Metrics.UI.Main;
 
 interface
 

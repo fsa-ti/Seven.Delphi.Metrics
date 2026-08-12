@@ -372,11 +372,42 @@ begin
   end;
 end;
 
-function TCodeAnalyzer.ParseFileToXML(const AFileName: string; var ATotalCommentLines: Integer; var ATotalBlankLines: Integer; var ATotalSourceLines: Integer): string;
+function LoadFileTextSafely(const AFileName: string): string;
 var
-  SyntaxTree: TSyntaxNode;
-  Builder: TPasSyntaxTreeBuilder;
+  Bytes: TBytes;
+  Encoding: TEncoding;
+begin
+  if not TFile.Exists(AFileName) then
+    Exit('');
+
+  Bytes := TFile.ReadAllBytes(AFileName);
+  if Length(Bytes) = 0 then
+    Exit('');
+
+  Encoding := nil;
+  TEncoding.GetBufferEncoding(Bytes, Encoding, TEncoding.UTF8);
+  if Encoding = nil then
+    Encoding := TEncoding.UTF8;
+
+  try
+    Result := Encoding.GetString(Bytes);
+  except
+    try
+      Result := TEncoding.ANSI.GetString(Bytes);
+    except
+      Result := TEncoding.Default.GetString(Bytes);
+    end;
+  end;
+
+  if (Length(Result) > 0) and (Result[1] = #$FEFF) then
+    Delete(Result, 1, 1);
+end;
+
+function TCodeAnalyzer.ParseFileToXML(const AFileName: string; var ATotalCommentLines, ATotalBlankLines, ATotalSourceLines: Integer): string;
+var
   SourceCodeStringStream: TStringStream;
+  Builder: TPasSyntaxTreeBuilder;
+  SyntaxTree: TSyntaxNode;
   XMLOutput: string;
   ComInitNeeded: Boolean;
 begin
@@ -386,10 +417,10 @@ begin
   ATotalBlankLines := 0;
   ATotalSourceLines := 0;
 
-  SourceCodeStringStream := TStringStream.Create();
+  const SourceText = LoadFileTextSafely(AFileName);
+  SourceCodeStringStream := TStringStream.Create(SourceText, TEncoding.UTF8);
   Builder := TPasSyntaxTreeBuilder.Create;
   try
-    SourceCodeStringStream.LoadFromFile(AFileName);
     SourceCodeStringStream.Position := 0;
 
     try
