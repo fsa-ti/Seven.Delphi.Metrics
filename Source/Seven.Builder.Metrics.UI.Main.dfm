@@ -424,7 +424,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 12
       Width = 185
       Height = 60
-      BevelOuter = bvSingle
+      BevelOuter = bvLowered
       Color = 16316668
       ParentBackground = False
       TabOrder = 0
@@ -454,7 +454,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 12
       Width = 185
       Height = 60
-      BevelOuter = bvSingle
+      BevelOuter = bvLowered
       Color = 16316668
       ParentBackground = False
       TabOrder = 1
@@ -484,7 +484,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 12
       Width = 185
       Height = 60
-      BevelOuter = bvSingle
+      BevelOuter = bvLowered
       Color = 16316668
       ParentBackground = False
       TabOrder = 2
@@ -514,7 +514,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 12
       Width = 185
       Height = 60
-      BevelOuter = bvSingle
+      BevelOuter = bvLowered
       Color = 16316668
       ParentBackground = False
       TabOrder = 3
@@ -544,7 +544,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 12
       Width = 200
       Height = 60
-      BevelOuter = bvSingle
+      BevelOuter = bvLowered
       Color = 16316668
       ParentBackground = False
       TabOrder = 4
