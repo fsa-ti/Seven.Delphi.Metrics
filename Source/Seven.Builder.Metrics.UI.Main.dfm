@@ -26,8 +26,8 @@ object FormMainMetrics: TFormMainMetrics
     object lblTitle: TLabel
       Left = 20
       Top = 14
-      Width = 300
-      Height = 25
+      Width = 289
+      Height = 28
       Caption = 'Seven Builder Metrics - Delphi'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = 13075456
@@ -39,11 +39,11 @@ object FormMainMetrics: TFormMainMetrics
     object lblSubtitle: TLabel
       Left = 20
       Top = 42
-      Width = 480
+      Width = 476
       Height = 17
       Caption = 
-        'An'#225'lise Est'#225'tica de M'#233'tricas de C'#243'digo, Complexidade Ciclom'#225't' +
-        'ica e Evolu'#231#227'o Git'
+        'An'#225'lise Est'#225'tica de M'#233'tricas de C'#243'digo, Complexidade Ciclom'#225'tica' +
+        ' e Evolu'#231#227'o Git'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = 9145236
       Font.Height = -13
@@ -65,11 +65,15 @@ object FormMainMetrics: TFormMainMetrics
     object lblTargetPath: TLabel
       Left = 20
       Top = 72
-      Width = 144
+      Width = 155
       Height = 15
       Caption = 'Caminho do Projeto (.dproj):'
+      Font.Charset = DEFAULT_CHARSET
       Font.Color = 10000000
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
+      ParentFont = False
     end
     object grpTargetType: TGroupBox
       Left = 16
@@ -77,7 +81,10 @@ object FormMainMetrics: TFormMainMetrics
       Width = 988
       Height = 52
       Caption = ' Sele'#231#227'o de Alvo para An'#225'lise '
+      Font.Charset = DEFAULT_CHARSET
       Font.Color = 10000000
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
@@ -88,7 +95,10 @@ object FormMainMetrics: TFormMainMetrics
         Height = 20
         Caption = 'Projeto (.dproj)'
         Checked = True
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 10000000
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
         TabOrder = 0
@@ -101,7 +111,10 @@ object FormMainMetrics: TFormMainMetrics
         Width = 220
         Height = 20
         Caption = 'Grupo de Projetos (.groupproj)'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 10000000
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
         TabOrder = 1
@@ -113,7 +126,10 @@ object FormMainMetrics: TFormMainMetrics
         Width = 200
         Height = 20
         Caption = 'Pasta / Diret'#243'rio completo'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 10000000
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
         Font.Style = []
         ParentFont = False
         TabOrder = 2
@@ -224,14 +240,14 @@ object FormMainMetrics: TFormMainMetrics
       object lblGitRepo: TLabel
         Left = 16
         Top = 46
-        Width = 117
+        Width = 120
         Height = 15
         Caption = 'Reposit'#243'rio Git (Pasta):'
       end
       object lblGitCommits: TLabel
         Left = 16
         Top = 78
-        Width = 138
+        Width = 132
         Height = 15
         Caption = 'Qtd. Commits a Analisar:'
       end
@@ -274,7 +290,7 @@ object FormMainMetrics: TFormMainMetrics
       object lblVersionCode: TLabel
         Left = 16
         Top = 46
-        Width = 92
+        Width = 95
         Height = 15
         Caption = 'C'#243'digo da Vers'#227'o:'
       end
@@ -288,7 +304,7 @@ object FormMainMetrics: TFormMainMetrics
       object lblIniConfig: TLabel
         Left = 16
         Top = 78
-        Width = 132
+        Width = 155
         Height = 15
         Caption = 'Configura'#231#227'o (db_config.ini):'
       end
@@ -314,7 +330,7 @@ object FormMainMetrics: TFormMainMetrics
         Width = 120
         Height = 23
         Date = 46246.000000000000000000
-        Time = 0.000000000000000000
+        Time = 46246.000000000000000000
         TabOrder = 2
       end
       object edtIniConfigPath: TEdit
@@ -433,22 +449,28 @@ object FormMainMetrics: TFormMainMetrics
       object lblKpiLocTitle: TLabel
         Left = 12
         Top = 8
-        Width = 103
+        Width = 102
         Height = 13
         Caption = 'LINHAS DE C'#211'DIGO'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 6579307
         Font.Height = -11
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
       object lblKpiLocValue: TLabel
         Left = 12
         Top = 26
-        Width = 12
+        Width = 11
         Height = 25
         Caption = '0'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 13075456
         Font.Height = -19
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
     end
     object pnlKpiClasses: TPanel
@@ -463,22 +485,28 @@ object FormMainMetrics: TFormMainMetrics
       object lblKpiClassesTitle: TLabel
         Left = 12
         Top = 8
-        Width = 86
+        Width = 84
         Height = 13
         Caption = 'CLASSES TOTAIS'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 6579307
         Font.Height = -11
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
       object lblKpiClassesValue: TLabel
         Left = 12
         Top = 26
-        Width = 12
+        Width = 11
         Height = 25
         Caption = '0'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 13075456
         Font.Height = -19
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
     end
     object pnlKpiMethods: TPanel
@@ -493,22 +521,28 @@ object FormMainMetrics: TFormMainMetrics
       object lblKpiMethodsTitle: TLabel
         Left = 12
         Top = 8
-        Width = 136
+        Width = 127
         Height = 13
         Caption = 'M'#201'TODOS IMPL. (BODY)'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 6579307
         Font.Height = -11
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
       object lblKpiMethodsValue: TLabel
         Left = 12
         Top = 26
-        Width = 12
+        Width = 11
         Height = 25
         Caption = '0'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 13075456
         Font.Height = -19
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
     end
     object pnlKpiComplexity: TPanel
@@ -523,22 +557,28 @@ object FormMainMetrics: TFormMainMetrics
       object lblKpiComplexityTitle: TLabel
         Left = 12
         Top = 8
-        Width = 111
+        Width = 121
         Height = 13
         Caption = 'COMPLEXIDADE (MCC)'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 6579307
         Font.Height = -11
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
       object lblKpiComplexityValue: TLabel
         Left = 12
         Top = 26
-        Width = 12
+        Width = 11
         Height = 25
         Caption = '0'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 13075456
         Font.Height = -19
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
     end
     object pnlKpiTime: TPanel
@@ -553,22 +593,28 @@ object FormMainMetrics: TFormMainMetrics
       object lblKpiTimeTitle: TLabel
         Left = 12
         Top = 8
-        Width = 105
+        Width = 115
         Height = 13
         Caption = 'TEMPO DE EXECU'#199#195'O'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 6579307
         Font.Height = -11
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
       object lblKpiTimeValue: TLabel
         Left = 12
         Top = 26
-        Width = 42
+        Width = 41
         Height = 25
         Caption = '0 ms'
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = 13075456
         Font.Height = -19
+        Font.Name = 'Segoe UI'
         Font.Style = [fsBold]
+        ParentFont = False
       end
     end
   end
@@ -581,8 +627,6 @@ object FormMainMetrics: TFormMainMetrics
     Top = 85
   end
   object selectFolderDialog: TFileOpenDialog
-    FavoriteFolders = <>
-    FileTypes = <>
     Options = [fdoPickFolders]
     Left = 835
     Top = 85
