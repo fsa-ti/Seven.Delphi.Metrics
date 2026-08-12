@@ -135,40 +135,41 @@ begin
   edtVersionCode.Text := '1.0.0';
   edtIniConfigPath.Text := TPath.Combine(ExeDir, 'db_config.ini');
 
-  Caption := 'Seven Builder Metrics - An'#$E1'lise Est'#$E1'tica de C'#$F3'digo Delphi';
-  lblTitle.Caption := 'Seven Builder Metrics - Delphi';
-  lblSubtitle.Caption := 'An'#$E1'lise Est'#$E1'tica de M'#$E9'tricas de C'#$F3'digo, Complexidade Ciclom'#$E1'tica e Evolu'#$E7#$E3'o Git';
+  const AppVersion = '1.0.0';
+  Caption := Format('Seven Delphi Metrics v%s - Análise Estática de Código Delphi', [AppVersion]);
+  lblTitle.Caption := Format('Seven Delphi Metrics v%s', [AppVersion]);
+  lblSubtitle.Caption := 'Análise Estática de Métricas de Código, Complexidade Ciclomática e Evolução Git';
 
-  grpTargetType.Caption := ' Sele'#$E7#$E3'o de Alvo para An'#$E1'lise ';
+  grpTargetType.Caption := ' Seleção de Alvo para Análise ';
   rbProject.Caption := 'Projeto (.dproj)';
   rbGroupProject.Caption := 'Grupo de Projetos (.groupproj)';
-  rbDirectory.Caption := 'Pasta / Diret'#$F3'rio completo';
+  rbDirectory.Caption := 'Pasta / Diretório completo';
   lblTargetPath.Caption := 'Caminho do Projeto (.dproj):';
 
-  tsReports.Caption := 'Sa'#$ED'das & Dashboards';
-  chkExportJson.Caption := 'Exportar Relat'#$F3'rio JSON:';
+  tsReports.Caption := 'Saídas & Dashboards';
+  chkExportJson.Caption := 'Exportar Relatório JSON:';
   chkGenerateHtml.Caption := 'Gerar Dashboard HTML:';
 
-  tsGit.Caption := 'Evolu'#$E7#$E3'o Temporal Git';
-  chkEnableGit.Caption := 'Habilitar An'#$E1'lise de Evolu'#$E7#$E3'o Hist'#$F3'rica no Git';
-  lblGitRepo.Caption := 'Reposit'#$F3'rio Git (Pasta):';
+  tsGit.Caption := 'Evolução Temporal Git';
+  chkEnableGit.Caption := 'Habilitar Análise de Evolução Histórica no Git';
+  lblGitRepo.Caption := 'Repositório Git (Pasta):';
   lblGitCommits.Caption := 'Qtd. Commits a Analisar:';
 
   tsDatabase.Caption := 'Banco de Dados (PostgreSQL / Breeze)';
-  chkEnableDb.Caption := 'Salvar M'#$E9'tricas no Banco de Dados (PostgreSQL)';
-  lblVersionCode.Caption := 'C'#$F3'digo da Vers'#$E3'o:';
-  lblVersionDate.Caption := 'Data da Vers'#$E3'o:';
-  lblIniConfig.Caption := 'Configura'#$E7#$E3'o (db_config.ini):';
+  chkEnableDb.Caption := 'Salvar Métricas no Banco de Dados (PostgreSQL)';
+  lblVersionCode.Caption := 'Código da Versão:';
+  lblVersionDate.Caption := 'Data da Versão:';
+  lblIniConfig.Caption := 'Configuração (db_config.ini):';
 
-  btnExecute.Caption := 'EXECUTAR AN'#$C1'LISE EST'#$C1'TICA DE C'#$D3'DIGO';
+  btnExecute.Caption := 'EXECUTAR ANÁLISE ESTÁTICA DE CÓDIGO';
   tsFiles.Caption := 'Lista de Arquivos Fontes Analisados';
   tsHotspots.Caption := 'Top 10 Hotspots (Arquivos Mais Complexos)';
 
-  lblKpiLocTitle.Caption := 'LINHAS DE C'#$D3'DIGO';
+  lblKpiLocTitle.Caption := 'LINHAS DE CÓDIGO';
   lblKpiClassesTitle.Caption := 'CLASSES TOTAIS';
-  lblKpiMethodsTitle.Caption := 'M'#$C9'TODOS IMPL. (BODY)';
+  lblKpiMethodsTitle.Caption := 'MÉTODOS IMPL. (BODY)';
   lblKpiComplexityTitle.Caption := 'COMPLEXIDADE (MCC)';
-  lblKpiTimeTitle.Caption := 'TEMPO DE EXECU'#$C7#$C3'O';
+  lblKpiTimeTitle.Caption := 'TEMPO DE EXECUÇÃO';
 
   lsvFiles.ViewStyle := vsReport;
   lsvFiles.Columns.Add.Caption := 'Arquivo Fonte';
