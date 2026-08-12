@@ -158,15 +158,15 @@ begin
   lblVersionDate.Caption := 'Data da Vers'#$E3'o:';
   lblIniConfig.Caption := 'Configura'#$E7#$E3'o (db_config.ini):';
 
-  btnExecute.Caption := 'EXECUTAR ANALISE ESTATICA DE CODIGO';
+  btnExecute.Caption := 'EXECUTAR AN'#$C1'LISE EST'#$C1'TICA DE C'#$D3'DIGO';
   tsFiles.Caption := 'Lista de Arquivos Fontes Analisados';
   tsHotspots.Caption := 'Top 10 Hotspots (Arquivos Mais Complexos)';
 
-  lblKpiLocTitle.Caption := 'LINHAS DE CODIGO';
+  lblKpiLocTitle.Caption := 'LINHAS DE C'#$D3'DIGO';
   lblKpiClassesTitle.Caption := 'CLASSES TOTAIS';
-  lblKpiMethodsTitle.Caption := 'METODOS IMPL. (BODY)';
+  lblKpiMethodsTitle.Caption := 'M'#$C9'TODOS IMPL. (BODY)';
   lblKpiComplexityTitle.Caption := 'COMPLEXIDADE (MCC)';
-  lblKpiTimeTitle.Caption := 'TEMPO DE EXECUCAO';
+  lblKpiTimeTitle.Caption := 'TEMPO DE EXECU'#$C7#$C3'O';
 
   lsvFiles.ViewStyle := vsReport;
   lsvFiles.Columns.Add.Caption := 'Arquivo Fonte';

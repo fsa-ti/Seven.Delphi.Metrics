@@ -1,7 +1,7 @@
 object FormMainMetrics: TFormMainMetrics
   Left = 0
   Top = 0
-  Caption = 'Seven Builder Metrics - Analise Estatica de Codigo Delphi'
+  Caption = 'Seven Builder Metrics - An'#193'lise Est'#193'tica de C'#243'digo Delphi'
   ClientHeight = 750
   ClientWidth = 1020
   Color = 16316668
@@ -41,7 +41,9 @@ object FormMainMetrics: TFormMainMetrics
       Top = 42
       Width = 480
       Height = 17
-      Caption = 'Analise Estatica de Metricas de Codigo, Complexidade Ciclomatica e Evolucao Git'
+      Caption = 
+        'An'#225'lise Est'#225'tica de M'#233'tricas de C'#243'digo, Complexidade Ciclom'#225't' +
+        'ica e Evolu'#231#227'o Git'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = 9145236
       Font.Height = -13
@@ -74,7 +76,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 10
       Width = 988
       Height = 52
-      Caption = ' Selecao de Alvo para Analise '
+      Caption = ' Sele'#231#227'o de Alvo para An'#225'lise '
       Font.Color = 10000000
       Font.Style = [fsBold]
       ParentFont = False
@@ -110,7 +112,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 22
         Width = 200
         Height = 20
-        Caption = 'Pasta / Diretorio completo'
+        Caption = 'Pasta / Diret'#243'rio completo'
         Font.Color = 10000000
         Font.Style = []
         ParentFont = False
@@ -153,13 +155,13 @@ object FormMainMetrics: TFormMainMetrics
     Align = alTop
     TabOrder = 2
     object tsReports: TTabSheet
-      Caption = 'Saidas & Dashboards'
+      Caption = 'Sa'#237'das & Dashboards'
       object chkExportJson: TCheckBox
         Left = 16
         Top = 18
         Width = 170
         Height = 20
-        Caption = 'Exportar Relatorio JSON:'
+        Caption = 'Exportar Relat'#243'rio JSON:'
         Checked = True
         State = cbChecked
         TabOrder = 0
@@ -217,14 +219,14 @@ object FormMainMetrics: TFormMainMetrics
       end
     end
     object tsGit: TTabSheet
-      Caption = 'Evolucao Temporal Git'
+      Caption = 'Evolu'#231#227'o Temporal Git'
       ImageIndex = 1
       object lblGitRepo: TLabel
         Left = 16
         Top = 46
         Width = 117
         Height = 15
-        Caption = 'Repositorio Git (Pasta):'
+        Caption = 'Reposit'#243'rio Git (Pasta):'
       end
       object lblGitCommits: TLabel
         Left = 16
@@ -238,7 +240,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 14
         Width = 280
         Height = 20
-        Caption = 'Habilitar Analise de Evolucao Historica no Git'
+        Caption = 'Habilitar An'#225'lise de Evolu'#231#227'o Hist'#243'rica no Git'
         TabOrder = 0
       end
       object edtGitRepoPath: TEdit
@@ -274,28 +276,28 @@ object FormMainMetrics: TFormMainMetrics
         Top = 46
         Width = 92
         Height = 15
-        Caption = 'Codigo da Versao:'
+        Caption = 'C'#243'digo da Vers'#227'o:'
       end
       object lblVersionDate: TLabel
         Left = 260
         Top = 46
         Width = 80
         Height = 15
-        Caption = 'Data da Versao:'
+        Caption = 'Data da Vers'#227'o:'
       end
       object lblIniConfig: TLabel
         Left = 16
         Top = 78
         Width = 132
         Height = 15
-        Caption = 'Configuracao (db_config.ini):'
+        Caption = 'Configura'#231#227'o (db_config.ini):'
       end
       object chkEnableDb: TCheckBox
         Left = 16
         Top = 14
         Width = 320
         Height = 20
-        Caption = 'Salvar Metricas no Banco de Dados (PostgreSQL)'
+        Caption = 'Salvar M'#233'tricas no Banco de Dados (PostgreSQL)'
         TabOrder = 0
       end
       object edtVersionCode: TEdit
@@ -348,7 +350,7 @@ object FormMainMetrics: TFormMainMetrics
       Top = 10
       Width = 988
       Height = 40
-      Caption = 'EXECUTAR ANALISE ESTATICA DE CODIGO'
+      Caption = 'EXECUTAR AN'#193'LISE EST'#193'TICA DE C'#243'DIGO'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -14
@@ -433,7 +435,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 8
         Width = 103
         Height = 13
-        Caption = 'LINHAS DE CODIGO'
+        Caption = 'LINHAS DE C'#211'DIGO'
         Font.Color = 6579307
         Font.Height = -11
         Font.Style = [fsBold]
@@ -493,7 +495,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 8
         Width = 136
         Height = 13
-        Caption = 'METODOS IMPL. (BODY)'
+        Caption = 'M'#201'TODOS IMPL. (BODY)'
         Font.Color = 6579307
         Font.Height = -11
         Font.Style = [fsBold]
@@ -553,7 +555,7 @@ object FormMainMetrics: TFormMainMetrics
         Top = 8
         Width = 105
         Height = 13
-        Caption = 'TEMPO DE EXECUCAO'
+        Caption = 'TEMPO DE EXECU'#199#195'O'
         Font.Color = 6579307
         Font.Height = -11
         Font.Style = [fsBold]
