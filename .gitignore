@@ -1,0 +1,31 @@
+# Delphi build outputs
+/Win32/
+/Win64/
+__history/
+__recovery/
+*.dcu
+*.o
+*.obj
+*.exe
+*.dll
+*.bpl
+*.dcp
+
+# Delphi IDE session files
+*.dsk
+*.~dsk
+*.identcache
+*.local
+*.dsv
+*.stat
+*.vrc
+*.vrs
+
+# Large video assets
+*.mp4
+
+# Temporary test outputs
+MetricasOutput.json
+OutputMetrics.json
+ProjectResult.json
+GitEvolution.json

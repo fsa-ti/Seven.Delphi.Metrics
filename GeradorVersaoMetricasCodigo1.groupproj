@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{CECEFCBE-8B7F-4681-8AA8-07E516817ADC}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Seven.Builder.Metrics.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="Seven_Builder_Metrics">
+        <MSBuild Projects="Seven.Builder.Metrics.dproj"/>
+    </Target>
+    <Target Name="Seven_Builder_Metrics:Clean">
+        <MSBuild Projects="Seven.Builder.Metrics.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Seven_Builder_Metrics:Make">
+        <MSBuild Projects="Seven.Builder.Metrics.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="Seven_Builder_Metrics"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="Seven_Builder_Metrics:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="Seven_Builder_Metrics:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
