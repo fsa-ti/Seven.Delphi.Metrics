@@ -24,7 +24,8 @@ GeradorVersaoMetricasCodigo/
 │   ├── Seven.Builder.Metrics.Tests.dpr                   # Suíte de testes automatizados DUnitX
 │   └── Test.CodeAnalyzer.pas                              # Fixture de testes unitários (9 cenários ativos)
 ├── docs/
-│   └── STATUS_E_PLANEJAMENTO.md                           # Documentação e controle de roadmap
+│   ├── STATUS_E_PLANEJAMENTO.md                           # Documentação e controle de roadmap
+│   └── ESTRUTURA_BANCO_DE_DADOS.md                        # Mapeamento do esquema relacional e scripts DDL SQL
 └── Terceiros/
     ├── DelphiAST/                  # AST Parser Delphi (TPasSyntaxTreeBuilder)
     └── Breeze/                     # Biblioteca ORM/Client de Banco de Dados
