@@ -481,46 +481,56 @@ begin
   CodeFileStatistics.BlankLineCount := TotalBlankLines;
   CodeFileStatistics.LineCodeCount := TotalSourceLines;
 
-  // Carregar o XML no documento
-  FXMLDoc.LoadFromXML(XMLContent);
+  // Carregar o XML no documento de forma segura desabilitando a restrição MaxElementDepth do MSXML
+  try
+    FXMLDoc.Active := True;
+    var DOM2: IXMLDOMDocument2;
+    if Supports(FXMLDoc.DOMDocument, IXMLDOMDocument2, DOM2) then
+    begin
+      try
+        DOM2.setProperty('MaxElementDepth', 0);
+      except
+      end;
+    end;
+    FXMLDoc.LoadFromXML(XMLContent);
 
-  // Realiza as contagens XPath (incluindo novas e refinadas)
-  CodeFileStatistics.ClassCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="class"]');
-  CodeFileStatistics.InterfaceCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="interface"]');
-  CodeFileStatistics.RecordCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="record"]');
-  CodeFileStatistics.EnumCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@name="enum"]'); // Contagem de Enums
+    CodeFileStatistics.ClassCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="class"]');
+    CodeFileStatistics.InterfaceCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="interface"]');
+    CodeFileStatistics.RecordCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="record"]');
+    CodeFileStatistics.EnumCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="enum"]');
 
-  CodeFileStatistics.PublicMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PUBLIC/METHOD');
-  CodeFileStatistics.PrivateMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PRIVATE/METHOD');
-  CodeFileStatistics.ProtectedMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PROTECTED/METHOD');
-  CodeFileStatistics.StaticMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]//METHOD[@class="true"]'); // Métodos estáticos de classe
+    CodeFileStatistics.PublicMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PUBLIC/METHOD');
+    CodeFileStatistics.PrivateMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PRIVATE/METHOD');
+    CodeFileStatistics.ProtectedMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PROTECTED/METHOD');
+    CodeFileStatistics.StaticMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]//METHOD[@class="true"]');
 
-  // Contagem de Propriedades
-  CodeFileStatistics.ClassPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/*/PROPERTY'); // Propriedades em qualquer seção de classe
-  CodeFileStatistics.RecordPropertyCount:= GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="record"]/PROPERTY'); // Propriedades de Record (Hipótese: direto sob TYPE)
-  CodeFileStatistics.InterfacePropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="interface"]/PROPERTY'); // Propriedades de Interface
+    CodeFileStatistics.ClassPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/*/PROPERTY');
+    CodeFileStatistics.RecordPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="record"]/PROPERTY');
+    CodeFileStatistics.InterfacePropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="interface"]/PROPERTY');
 
-  CodeFileStatistics.GlobalFunctionCount := GetNodeCount('/UNIT/INTERFACE/METHOD');
-  CodeFileStatistics.GlobalConstantCount := GetNodeCount('/UNIT/INTERFACE/CONSTANTS/CONSTANT');
-  CodeFileStatistics.GlobalVariableCount := GetNodeCount('/UNIT/INTERFACE/VARIABLES/VARIABLE');
+    CodeFileStatistics.GlobalFunctionCount := GetNodeCount('/UNIT/INTERFACE/METHOD');
+    CodeFileStatistics.GlobalConstantCount := GetNodeCount('/UNIT/INTERFACE/CONSTANTS/CONSTANT');
+    CodeFileStatistics.GlobalVariableCount := GetNodeCount('/UNIT/INTERFACE/VARIABLES/VARIABLE');
 
-  // Métodos implementados e Complexidade Ciclomática (MCC)
-  CodeFileStatistics.ImplMethodCount := GetNodeCount('/UNIT/IMPLEMENTATION//METHOD');
+    CodeFileStatistics.ImplMethodCount := GetNodeCount('/UNIT/IMPLEMENTATION//METHOD');
 
-  var BaseComplexity: Int64 := CodeFileStatistics.ImplMethodCount;
-  if BaseComplexity = 0 then
-    BaseComplexity := 1;
+    var BaseComplexity: Int64 := CodeFileStatistics.ImplMethodCount;
+    if BaseComplexity = 0 then
+      BaseComplexity := 1;
 
-  const IfCount = GetNodeCount('//IF');
-  const CaseCount = GetNodeCount('//CASE');
-  const ForCount = GetNodeCount('//FOR');
-  const WhileCount = GetNodeCount('//WHILE');
-  const RepeatCount = GetNodeCount('//REPEAT');
-  const ExceptCount = GetNodeCount('//EXCEPT');
-  const AndCount = GetNodeCount('//AND');
-  const OrCount = GetNodeCount('//OR');
+    const IfCount = GetNodeCount('//IF');
+    const CaseCount = GetNodeCount('//CASE');
+    const ForCount = GetNodeCount('//FOR');
+    const WhileCount = GetNodeCount('//WHILE');
+    const RepeatCount = GetNodeCount('//REPEAT');
+    const ExceptCount = GetNodeCount('//EXCEPT');
+    const AndCount = GetNodeCount('//AND');
+    const OrCount = GetNodeCount('//OR');
 
-  CodeFileStatistics.CyclomaticComplexity := BaseComplexity + IfCount + CaseCount + ForCount + WhileCount + RepeatCount + ExceptCount + AndCount + OrCount;
+    CodeFileStatistics.CyclomaticComplexity := BaseComplexity + IfCount + CaseCount + ForCount + WhileCount + RepeatCount + ExceptCount + AndCount + OrCount;
+  except on E: Exception do
+    CodeFileStatistics.ParseError := E.Message;
+  end;
 
   StopWatch.Stop();
   CodeFileStatistics.AnalysisTimeMs := StopWatch.ElapsedMilliseconds;
