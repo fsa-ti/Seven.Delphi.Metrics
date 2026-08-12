@@ -399,8 +399,11 @@ begin
     end;
   end;
 
-  if (Length(Result) > 0) and (Result[1] = #$FEFF) then
-    Delete(Result, 1, 1);
+  if Length(Result) > 0 then
+  begin
+    Result := StringReplace(Result, #$FEFF, '', [rfReplaceAll]);
+    Result := StringReplace(Result, #$200B, '', [rfReplaceAll]);
+  end;
 end;
 
 function TCodeAnalyzer.ParseFileToXML(const AFileName: string; var ATotalCommentLines, ATotalBlankLines, ATotalSourceLines: Integer): string;
@@ -504,62 +507,64 @@ begin
   CodeFileStatistics.FileName := FileName;
   StopWatch := TStopwatch.StartNew();
 
-  // Obter o XML do arquivo
-  TotalCommentLines := 0;
-  TotalBlankLines := 0;
-  TotalSourceLines := 0;
-  XMLContent := ParseFileToXML(FileName, TotalCommentLines, TotalBlankLines, TotalSourceLines);
-  CodeFileStatistics.CommentLineCount := TotalCommentLines;
-  CodeFileStatistics.BlankLineCount := TotalBlankLines;
-  CodeFileStatistics.LineCodeCount := TotalSourceLines;
-
-  // Carregar o XML no documento de forma segura desabilitando a restrição MaxElementDepth do MSXML
+  // Obter o XML do arquivo de forma protegida contra exceções sintáticas de unidades individuais
   try
-    FXMLDoc.Active := True;
-    var DOM2: IXMLDOMDocument2;
-    if Supports(FXMLDoc.DOMDocument, IXMLDOMDocument2, DOM2) then
+    TotalCommentLines := 0;
+    TotalBlankLines := 0;
+    TotalSourceLines := 0;
+    XMLContent := ParseFileToXML(FileName, TotalCommentLines, TotalBlankLines, TotalSourceLines);
+    CodeFileStatistics.CommentLineCount := TotalCommentLines;
+    CodeFileStatistics.BlankLineCount := TotalBlankLines;
+    CodeFileStatistics.LineCodeCount := TotalSourceLines;
+
+    if XMLContent <> '' then
     begin
-      try
-        DOM2.setProperty('MaxElementDepth', 0);
-      except
+      FXMLDoc.Active := True;
+      var DOM2: IXMLDOMDocument2;
+      if Supports(FXMLDoc.DOMDocument, IXMLDOMDocument2, DOM2) then
+      begin
+        try
+          DOM2.setProperty('MaxElementDepth', 0);
+        except
+        end;
       end;
+      FXMLDoc.LoadFromXML(XMLContent);
+
+      CodeFileStatistics.ClassCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="class"]');
+      CodeFileStatistics.InterfaceCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="interface"]');
+      CodeFileStatistics.RecordCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="record"]');
+      CodeFileStatistics.EnumCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="enum"]');
+
+      CodeFileStatistics.PublicMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PUBLIC/METHOD');
+      CodeFileStatistics.PrivateMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PRIVATE/METHOD');
+      CodeFileStatistics.ProtectedMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PROTECTED/METHOD');
+      CodeFileStatistics.StaticMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]//METHOD[@class="true"]');
+
+      CodeFileStatistics.ClassPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/*/PROPERTY');
+      CodeFileStatistics.RecordPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="record"]/PROPERTY');
+      CodeFileStatistics.InterfacePropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="interface"]/PROPERTY');
+
+      CodeFileStatistics.GlobalFunctionCount := GetNodeCount('/UNIT/INTERFACE/METHOD');
+      CodeFileStatistics.GlobalConstantCount := GetNodeCount('/UNIT/INTERFACE/CONSTANTS/CONSTANT');
+      CodeFileStatistics.GlobalVariableCount := GetNodeCount('/UNIT/INTERFACE/VARIABLES/VARIABLE');
+
+      CodeFileStatistics.ImplMethodCount := GetNodeCount('/UNIT/IMPLEMENTATION//METHOD');
+
+      var BaseComplexity: Int64 := CodeFileStatistics.ImplMethodCount;
+      if BaseComplexity = 0 then
+        BaseComplexity := 1;
+
+      const IfCount = GetNodeCount('//IF');
+      const CaseCount = GetNodeCount('//CASE');
+      const ForCount = GetNodeCount('//FOR');
+      const WhileCount = GetNodeCount('//WHILE');
+      const RepeatCount = GetNodeCount('//REPEAT');
+      const ExceptCount = GetNodeCount('//EXCEPT');
+      const AndCount = GetNodeCount('//AND');
+      const OrCount = GetNodeCount('//OR');
+
+      CodeFileStatistics.CyclomaticComplexity := BaseComplexity + IfCount + CaseCount + ForCount + WhileCount + RepeatCount + ExceptCount + AndCount + OrCount;
     end;
-    FXMLDoc.LoadFromXML(XMLContent);
-
-    CodeFileStatistics.ClassCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="class"]');
-    CodeFileStatistics.InterfaceCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="interface"]');
-    CodeFileStatistics.RecordCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="record"]');
-    CodeFileStatistics.EnumCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL[TYPE/@type="enum"]');
-
-    CodeFileStatistics.PublicMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PUBLIC/METHOD');
-    CodeFileStatistics.PrivateMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PRIVATE/METHOD');
-    CodeFileStatistics.ProtectedMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/PROTECTED/METHOD');
-    CodeFileStatistics.StaticMethodCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]//METHOD[@class="true"]');
-
-    CodeFileStatistics.ClassPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="class"]/*/PROPERTY');
-    CodeFileStatistics.RecordPropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="record"]/PROPERTY');
-    CodeFileStatistics.InterfacePropertyCount := GetNodeCount('/UNIT/INTERFACE//TYPESECTION/TYPEDECL/TYPE[@type="interface"]/PROPERTY');
-
-    CodeFileStatistics.GlobalFunctionCount := GetNodeCount('/UNIT/INTERFACE/METHOD');
-    CodeFileStatistics.GlobalConstantCount := GetNodeCount('/UNIT/INTERFACE/CONSTANTS/CONSTANT');
-    CodeFileStatistics.GlobalVariableCount := GetNodeCount('/UNIT/INTERFACE/VARIABLES/VARIABLE');
-
-    CodeFileStatistics.ImplMethodCount := GetNodeCount('/UNIT/IMPLEMENTATION//METHOD');
-
-    var BaseComplexity: Int64 := CodeFileStatistics.ImplMethodCount;
-    if BaseComplexity = 0 then
-      BaseComplexity := 1;
-
-    const IfCount = GetNodeCount('//IF');
-    const CaseCount = GetNodeCount('//CASE');
-    const ForCount = GetNodeCount('//FOR');
-    const WhileCount = GetNodeCount('//WHILE');
-    const RepeatCount = GetNodeCount('//REPEAT');
-    const ExceptCount = GetNodeCount('//EXCEPT');
-    const AndCount = GetNodeCount('//AND');
-    const OrCount = GetNodeCount('//OR');
-
-    CodeFileStatistics.CyclomaticComplexity := BaseComplexity + IfCount + CaseCount + ForCount + WhileCount + RepeatCount + ExceptCount + AndCount + OrCount;
   except on E: Exception do
     CodeFileStatistics.ParseError := E.Message;
   end;
