@@ -12,6 +12,7 @@ uses
   System.Classes,
   System.IOUtils,
   System.Math,
+  System.Generics.Collections,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -19,6 +20,7 @@ uses
   Vcl.StdCtrls,
   Vcl.ExtCtrls,
   Vcl.ComCtrls,
+  Vcl.CheckLst,
   Seven.Delphi.Metrics.CodeAnalyzer,
   Seven.Delphi.Metrics.ProjectParser,
   Seven.Delphi.Metrics.GitAnalyzer,
@@ -26,7 +28,8 @@ uses
   Seven.Delphi.Metrics.HtmlHelpGenerator,
   Seven.Delphi.Metrics.HistoryService,
   Seven.Delphi.Metrics.Engine,
-  Seven.Delphi.Metrics.SaveService;
+  Seven.Delphi.Metrics.SaveService,
+  Seven.Delphi.Metrics.PresetService;
 
 type
   TTargetType = (ttProject, ttGroupProject, ttDirectory);
@@ -45,6 +48,15 @@ type
     btnBrowseTarget: TButton;
     btnListFiles: TButton;
     pgcOptions: TPageControl;
+    tsProjects: TTabSheet;
+    lblProjectsHelp: TLabel;
+    clbProjects: TCheckListBox;
+    btnSelectAllProjects: TButton;
+    btnUnselectAllProjects: TButton;
+    btnAddDproj: TButton;
+    btnRemoveDproj: TButton;
+    btnSavePreset: TButton;
+    btnLoadPreset: TButton;
     tsReports: TTabSheet;
     chkExportJson: TCheckBox;
     edtJsonPath: TEdit;
@@ -101,6 +113,12 @@ type
     procedure rbTargetTypeClick(Sender: TObject);
     procedure btnBrowseTargetClick(Sender: TObject);
     procedure btnListFilesClick(Sender: TObject);
+    procedure btnSelectAllProjectsClick(Sender: TObject);
+    procedure btnUnselectAllProjectsClick(Sender: TObject);
+    procedure btnAddDprojClick(Sender: TObject);
+    procedure btnRemoveDprojClick(Sender: TObject);
+    procedure btnSavePresetClick(Sender: TObject);
+    procedure btnLoadPresetClick(Sender: TObject);
     procedure btnBrowseJsonClick(Sender: TObject);
     procedure btnBrowseHtmlClick(Sender: TObject);
     procedure btnOpenHtmlClick(Sender: TObject);
@@ -113,6 +131,7 @@ type
     procedure PopulateFilesListView(const Files: TArray<string>);
     procedure UpdateKpiCards(const CodeStats: TCodeStatistics);
     procedure PopulateHotspots(const CodeStats: TCodeStatistics);
+    procedure RefreshDiscoveredFilesFromProjects;
   public
   end;
 
@@ -146,6 +165,15 @@ begin
   rbDirectory.Caption := 'Pasta / Diretório completo';
   lblTargetPath.Caption := 'Caminho do Projeto (.dproj):';
 
+  tsProjects.Caption := 'Projetos (.dproj) / Presets';
+  lblProjectsHelp.Caption := 'Projetos (.dproj) a serem analisados no grupo:';
+  btnSelectAllProjects.Caption := 'Marcar Todos';
+  btnUnselectAllProjects.Caption := 'Desmarcar Todos';
+  btnAddDproj.Caption := 'Adicionar .dproj...';
+  btnRemoveDproj.Caption := 'Remover Selecionado';
+  btnSavePreset.Caption := 'Salvar Preset...';
+  btnLoadPreset.Caption := 'Carregar Preset...';
+
   tsReports.Caption := 'Saídas & Dashboards';
   chkExportJson.Caption := 'Exportar Relatório JSON:';
   chkGenerateHtml.Caption := 'Gerar Dashboard HTML:';
@@ -172,6 +200,7 @@ begin
   lblKpiTimeTitle.Caption := 'TEMPO DE EXECUÇÃO';
 
   lsvFiles.ViewStyle := vsReport;
+  lsvFiles.Columns.Clear;
   lsvFiles.Columns.Add.Caption := 'Arquivo Fonte';
   lsvFiles.Columns[0].Width := 300;
   lsvFiles.Columns.Add.Caption := 'LOC';
@@ -190,6 +219,7 @@ begin
   lsvFiles.Columns[7].Width := 80;
 
   lsvHotspots.ViewStyle := vsReport;
+  lsvHotspots.Columns.Clear;
   lsvHotspots.Columns.Add.Caption := 'Arquivo (Hotspot)';
   lsvHotspots.Columns[0].Width := 380;
   lsvHotspots.Columns.Add.Caption := 'MCC (Complexidade)';
@@ -243,6 +273,8 @@ begin
 end;
 
 procedure TFormMainMetrics.btnListFilesClick(Sender: TObject);
+var
+  Projects: TArray<string>;
 begin
   const TargetPath = Trim(edtTargetPath.Text);
   if (TargetPath = '') or (not TFile.Exists(TargetPath) and not TDirectory.Exists(TargetPath)) then
@@ -251,15 +283,196 @@ begin
     Exit;
   end;
 
-  case GetTargetType of
-    ttProject, ttGroupProject:
-      FDiscoveredFiles := TProjectParser.ExtractProjectFiles(TargetPath);
-    ttDirectory:
-      FDiscoveredFiles := TDirectory.GetFiles(TargetPath, '*.pas', TSearchOption.soAllDirectories);
+  clbProjects.Items.BeginUpdate;
+  try
+    clbProjects.Items.Clear;
+    case GetTargetType of
+      ttProject:
+        begin
+          if TFile.Exists(TargetPath) then
+          begin
+            const Index = clbProjects.Items.Add(TargetPath);
+            clbProjects.Checked[Index] := True;
+          end;
+        end;
+      ttGroupProject:
+        begin
+          Projects := TProjectParser.ExtractDprojFromGroupproj(TargetPath);
+          for var P in Projects do
+          begin
+            const Index = clbProjects.Items.Add(P);
+            clbProjects.Checked[Index] := True;
+          end;
+        end;
+      ttDirectory:
+        begin
+          Projects := TDirectory.GetFiles(TargetPath, '*.dproj', TSearchOption.soAllDirectories);
+          for var P in Projects do
+          begin
+            const Index = clbProjects.Items.Add(P);
+            clbProjects.Checked[Index] := True;
+          end;
+        end;
+  end;
+  finally
+    clbProjects.Items.EndUpdate;
   end;
 
+  RefreshDiscoveredFilesFromProjects;
+
   PopulateFilesListView(FDiscoveredFiles);
-  ShowMessage(Format('%d arquivos fontes encontrados.', [Length(FDiscoveredFiles)]));
+  pgcOptions.ActivePage := tsProjects;
+  ShowMessage(Format('%d projetos (.dproj) listados com checkbox. %d arquivos fontes (.pas) mapeados sem duplicatas.', [clbProjects.Items.Count, Length(FDiscoveredFiles)]));
+end;
+
+procedure TFormMainMetrics.btnSelectAllProjectsClick(Sender: TObject);
+begin
+  for var I := 0 to clbProjects.Items.Count - 1 do
+    clbProjects.Checked[I] := True;
+  RefreshDiscoveredFilesFromProjects;
+  PopulateFilesListView(FDiscoveredFiles);
+end;
+
+procedure TFormMainMetrics.btnUnselectAllProjectsClick(Sender: TObject);
+begin
+  for var I := 0 to clbProjects.Items.Count - 1 do
+    clbProjects.Checked[I] := False;
+  RefreshDiscoveredFilesFromProjects;
+  PopulateFilesListView(FDiscoveredFiles);
+end;
+
+procedure TFormMainMetrics.btnAddDprojClick(Sender: TObject);
+begin
+  openDialogTarget.Filter := 'Projetos Delphi (*.dproj)|*.dproj|Todos (*.*)|*.*';
+  if openDialogTarget.Execute then
+  begin
+    const NewProj = openDialogTarget.FileName;
+    if clbProjects.Items.IndexOf(NewProj) < 0 then
+    begin
+      const Idx = clbProjects.Items.Add(NewProj);
+      clbProjects.Checked[Idx] := True;
+      RefreshDiscoveredFilesFromProjects;
+      PopulateFilesListView(FDiscoveredFiles);
+    end;
+  end;
+end;
+
+procedure TFormMainMetrics.btnRemoveDprojClick(Sender: TObject);
+begin
+  if clbProjects.ItemIndex >= 0 then
+  begin
+    clbProjects.Items.Delete(clbProjects.ItemIndex);
+    RefreshDiscoveredFilesFromProjects;
+    PopulateFilesListView(FDiscoveredFiles);
+  end;
+end;
+
+procedure TFormMainMetrics.btnSavePresetClick(Sender: TObject);
+var
+  Preset: TPresetData;
+  Items: TArray<TPresetProjectItem>;
+begin
+  saveDialogReport.Filter := 'Preset de Projetos (*.sdmpreset.json)|*.sdmpreset.json|JSON (*.json)|*.json';
+  saveDialogReport.FileName := 'MeuProjetoPreset.sdmpreset.json';
+  if saveDialogReport.Execute then
+  begin
+    Preset.PresetName := TPath.GetFileNameWithoutExtension(saveDialogReport.FileName);
+    Preset.TargetPath := Trim(edtTargetPath.Text);
+    SetLength(Items, clbProjects.Items.Count);
+    for var I := 0 to clbProjects.Items.Count - 1 do
+    begin
+      Items[I].Path := clbProjects.Items[I];
+      Items[I].Enabled := clbProjects.Checked[I];
+    end;
+    Preset.Projects := Items;
+
+    TPresetService.SavePresetToFile(saveDialogReport.FileName, Preset);
+    ShowMessage(Format('Preset salvo com sucesso com %d projetos!', [Length(Items)]));
+  end;
+end;
+
+procedure TFormMainMetrics.btnLoadPresetClick(Sender: TObject);
+var
+  Preset: TPresetData;
+begin
+  openDialogTarget.Filter := 'Preset de Projetos (*.sdmpreset.json)|*.sdmpreset.json|JSON (*.json)|*.json';
+  if openDialogTarget.Execute then
+  begin
+    if TPresetService.LoadPresetFromFile(openDialogTarget.FileName, Preset) then
+    begin
+      if Preset.TargetPath <> '' then
+        edtTargetPath.Text := Preset.TargetPath;
+
+      clbProjects.Items.BeginUpdate;
+      try
+        clbProjects.Items.Clear;
+        for var Item in Preset.Projects do
+        begin
+          const Idx = clbProjects.Items.Add(Item.Path);
+          clbProjects.Checked[Idx] := Item.Enabled;
+        end;
+      finally
+        clbProjects.Items.EndUpdate;
+      end;
+
+      RefreshDiscoveredFilesFromProjects;
+      PopulateFilesListView(FDiscoveredFiles);
+      pgcOptions.ActivePage := tsProjects;
+      ShowMessage(Format('Preset "%s" carregado com sucesso!', [Preset.PresetName]));
+    end
+    else
+      ShowMessage('Não foi possível carregar o arquivo de preset selecionado.');
+  end;
+end;
+
+procedure TFormMainMetrics.RefreshDiscoveredFilesFromProjects;
+var
+  SeenUnits: THashSet<string>;
+  FilesList: TList<string>;
+  ProjectFile: string;
+  UnitsInProj: TArray<string>;
+begin
+  SeenUnits := THashSet<string>.Create;
+  FilesList := TList<string>.Create;
+  try
+    if (clbProjects.Items.Count = 0) and (GetTargetType = ttDirectory) then
+    begin
+      const TargetPath = Trim(edtTargetPath.Text);
+      if TDirectory.Exists(TargetPath) then
+      begin
+        const AllPas = TDirectory.GetFiles(TargetPath, '*.pas', TSearchOption.soAllDirectories);
+        for var PasFile in AllPas do
+        begin
+          const NormPath = TPath.GetFullPath(PasFile).ToLower;
+          if SeenUnits.Add(NormPath) then
+            FilesList.Add(PasFile);
+        end;
+      end;
+    end;
+
+    for var I := 0 to clbProjects.Items.Count - 1 do
+    begin
+      if clbProjects.Checked[I] then
+      begin
+        ProjectFile := clbProjects.Items[I];
+        if TFile.Exists(ProjectFile) then
+        begin
+          UnitsInProj := TProjectParser.ExtractProjectFiles(ProjectFile);
+          for var UnitFile in UnitsInProj do
+          begin
+            const NormPath = TPath.GetFullPath(UnitFile).ToLower;
+            if SeenUnits.Add(NormPath) then
+              FilesList.Add(UnitFile);
+          end;
+        end;
+      end;
+    end;
+
+    FDiscoveredFiles := FilesList.ToArray;
+  finally
+    SeenUnits.Free;
+    FilesList.Free;
+  end;
 end;
 
 procedure TFormMainMetrics.PopulateFilesListView(const Files: TArray<string>);
@@ -358,11 +571,8 @@ begin
       Exit;
     end;
 
-    // Análise direta
-    if (GetTargetType = ttProject) or (GetTargetType = ttGroupProject) then
-    begin
-      FDiscoveredFiles := TProjectParser.ExtractProjectFiles(TargetPath);
-    end;
+    // Atualiza a lista de arquivos fontes com base nos dprojs marcados no CheckListBox (garantindo sem duplicatas)
+    RefreshDiscoveredFilesFromProjects;
 
     Analyzer := TCodeAnalyzer.Create();
     try

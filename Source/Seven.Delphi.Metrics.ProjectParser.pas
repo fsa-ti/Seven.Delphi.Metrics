@@ -20,6 +20,7 @@ type
     class procedure ExtractNodesInclude(const XMLDoc: IXMLDocument; const XPath: string; const BaseDir: string; const OutputList: THashSet<string>); static;
   public
     class function ExtractProjectFiles(const AProjectPath: string): TArray<string>; static;
+    class function ExtractDprojFromGroupproj(const AGroupProjFile: string): TArray<string>; static;
   end;
 
 implementation
@@ -169,6 +170,50 @@ begin
   finally
     DprojSet.Free();
     ResultSet.Free();
+    if ComInitNeeded then
+      CoUninitialize();
+  end;
+end;
+
+class function TProjectParser.ExtractDprojFromGroupproj(const AGroupProjFile: string): TArray<string>;
+var
+  GroupDir: string;
+  DprojSet: THashSet<string>;
+  XMLDoc: IXMLDocument;
+  ComInitNeeded: Boolean;
+  FilteredList: TList<string>;
+begin
+  if not TFile.Exists(AGroupProjFile) then
+    Exit(nil);
+
+  ComInitNeeded := Succeeded(CoInitialize(nil));
+  GroupDir := TPath.GetDirectoryName(AGroupProjFile);
+  DprojSet := THashSet<string>.Create;
+  try
+    XMLDoc := TXMLDocument.Create(nil);
+    XMLDoc.Options := [];
+    XMLDoc.ParseOptions := [poPreserveWhiteSpace];
+    XMLDoc.FileName := AGroupProjFile;
+    XMLDoc.Active := True;
+
+    ExtractNodesInclude(XMLDoc, '//*[local-name()="Projects"]/*[local-name()="Project"]', GroupDir, DprojSet);
+    ExtractNodesInclude(XMLDoc, '//*[local-name()="Projects"]', GroupDir, DprojSet);
+    ExtractNodesInclude(XMLDoc, '//*[local-name()="Project"]', GroupDir, DprojSet);
+
+    FilteredList := TList<string>.Create;
+    try
+      for var DprojPath in DprojSet do
+      begin
+        const SubExt = TPath.GetExtension(DprojPath).ToLower();
+        if (SubExt = '.dproj') and TFile.Exists(DprojPath) then
+          FilteredList.Add(DprojPath);
+      end;
+      Result := FilteredList.ToArray();
+    finally
+      FilteredList.Free();
+    end;
+  finally
+    DprojSet.Free();
     if ComInitNeeded then
       CoUninitialize();
   end;

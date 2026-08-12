@@ -125,9 +125,10 @@ uses
 function TCodeStatistics.FileExists(const FileName: string): Boolean;
 begin
   Result := False;
+  const TargetNorm = TPath.GetFullPath(FileName).ToLower;
   for var Index := 0 to Self.Count - 1 do
   begin
-    if Self[Index].FileName.ToLower() = FileName.ToLower() then
+    if TPath.GetFullPath(Self[Index].FileName).ToLower = TargetNorm then
     begin
       Result := True;
       Break;

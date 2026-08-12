@@ -167,9 +167,81 @@ object FormMainMetrics: TFormMainMetrics
     Top = 182
     Width = 1020
     Height = 140
-    ActivePage = tsReports
+    ActivePage = tsProjects
     Align = alTop
     TabOrder = 2
+    object tsProjects: TTabSheet
+      Caption = 'Projetos (.dproj) / Presets'
+      object lblProjectsHelp: TLabel
+        Left = 16
+        Top = 6
+        Width = 245
+        Height = 15
+        Caption = 'Projetos (.dproj) a serem analisados no grupo:'
+      end
+      object clbProjects: TCheckListBox
+        Left = 16
+        Top = 24
+        Width = 730
+        Height = 82
+        ItemHeight = 17
+        TabOrder = 0
+      end
+      object btnSelectAllProjects: TButton
+        Left = 756
+        Top = 24
+        Width = 110
+        Height = 24
+        Caption = 'Marcar Todos'
+        TabOrder = 1
+        OnClick = btnSelectAllProjectsClick
+      end
+      object btnUnselectAllProjects: TButton
+        Left = 756
+        Top = 52
+        Width = 110
+        Height = 24
+        Caption = 'Desmarcar Todos'
+        TabOrder = 2
+        OnClick = btnUnselectAllProjectsClick
+      end
+      object btnAddDproj: TButton
+        Left = 872
+        Top = 24
+        Width = 130
+        Height = 24
+        Caption = 'Adicionar .dproj...'
+        TabOrder = 3
+        OnClick = btnAddDprojClick
+      end
+      object btnRemoveDproj: TButton
+        Left = 872
+        Top = 52
+        Width = 130
+        Height = 24
+        Caption = 'Remover Selecionado'
+        TabOrder = 4
+        OnClick = btnRemoveDprojClick
+      end
+      object btnSavePreset: TButton
+        Left = 756
+        Top = 80
+        Width = 110
+        Height = 25
+        Caption = 'Salvar Preset...'
+        TabOrder = 5
+        OnClick = btnSavePresetClick
+      end
+      object btnLoadPreset: TButton
+        Left = 872
+        Top = 80
+        Width = 130
+        Height = 25
+        Caption = 'Carregar Preset...'
+        TabOrder = 6
+        OnClick = btnLoadPresetClick
+      end
+    end
     object tsReports: TTabSheet
       Caption = 'Sa'#237'das & Dashboards'
       object chkExportJson: TCheckBox

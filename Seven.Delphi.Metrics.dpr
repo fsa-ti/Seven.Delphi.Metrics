@@ -1,4 +1,4 @@
-﻿program Seven.Delphi.Metrics;
+program Seven.Delphi.Metrics;
 
 uses
   Vcl.Forms,
@@ -14,6 +14,7 @@ uses
   Seven.Delphi.Metrics.HtmlReportGenerator in 'Source\Seven.Delphi.Metrics.HtmlReportGenerator.pas',
   Seven.Delphi.Metrics.ProjectParser in 'Source\Seven.Delphi.Metrics.ProjectParser.pas',
   Seven.Delphi.Metrics.SaveService in 'Source\Seven.Delphi.Metrics.SaveService.pas',
+  Seven.Delphi.Metrics.PresetService in 'Source\Seven.Delphi.Metrics.PresetService.pas',
   Seven.Delphi.Metrics.UI.Main in 'Source\Seven.Delphi.Metrics.UI.Main.pas' {FormMainMetrics};
 
 {$R *.res}
