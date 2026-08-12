@@ -7,11 +7,12 @@ uses
   System.SysUtils,
   System.IOUtils,
   System.JSON,
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics.ProjectParser,
-  Seven.Builder.AnalyticsAndMetrics.GitAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics,
-  Seven.Builder.AnalyticsAndMetrics.SaveService;
+  Seven.Delphi.Metrics.CodeAnalyzer,
+  Seven.Delphi.Metrics.ProjectParser,
+  Seven.Delphi.Metrics.GitAnalyzer,
+  Seven.Delphi.Metrics.Engine,
+  Seven.Delphi.Metrics.SaveService,
+  Seven.Delphi.Metrics.PresetService;
 
 type
   [TestFixture]
@@ -378,7 +379,7 @@ begin
   RepoPath := TPath.GetFullPath(TPath.Combine(ExtractFilePath(ParamStr(0)), '..\..\..\'));
   OutputJson := TPath.Combine(FTempDir, 'GitEvolution.json');
 
-  TGitAnalyzer.AnalyzeGitEvolution(RepoPath, 'Seven.Builder.Metrics.dproj', OutputJson, False, 3);
+  TGitAnalyzer.AnalyzeGitEvolution(RepoPath, 'Seven.Delphi.Metrics.dproj', OutputJson, False, 3);
 
   Assert.IsTrue(TFile.Exists(OutputJson), 'Git evolution JSON should be created');
   JsonContent := TFile.ReadAllText(OutputJson, TEncoding.UTF8);

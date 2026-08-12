@@ -326,7 +326,6 @@ begin
     RunGitCommand(ARepoPath, Format('checkout -f %s', [OriginalRef]), OutText);
     if DidStash then
       RunGitCommand(ARepoPath, 'stash pop', OutText);
-  end;
 
     // Save final evolution JSON
     const RootJson = TJSONObject.Create();
@@ -341,29 +340,28 @@ begin
           .AddPair('authorDate', Metric.AuthorDate)
           .AddPair('subject', Metric.Subject)
           .AddPair('isTag', Metric.IsTag)
-          .AddPair('totalFiles', Metric.TotalFiles)
-          .AddPair('totalLineCodeCount', Metric.TotalLineCodeCount)
-          .AddPair('totalCommentLineCount', Metric.TotalCommentLineCount)
-          .AddPair('totalBlankLineCount', Metric.TotalBlankLineCount)
-          .AddPair('totalClassCount', Metric.TotalClassCount)
-          .AddPair('totalInterfaceCount', Metric.TotalInterfaceCount)
-          .AddPair('totalRecordCount', Metric.TotalRecordCount)
-          .AddPair('totalEnumCount', Metric.TotalEnumCount)
-          .AddPair('totalPublicMethodCount', Metric.TotalPublicMethodCount)
-          .AddPair('totalImplMethodCount', Metric.TotalImplMethodCount)
-          .AddPair('totalCyclomaticComplexity', Metric.TotalCyclomaticComplexity)
-          .AddPair('analysisTimeMs', Metric.AnalysisTimeMs);
-      SeriesArray.Add(Item);
+          .AddPair('totalFiles', TJSONNumber.Create(Metric.TotalFiles))
+          .AddPair('totalLineCodeCount', TJSONNumber.Create(Metric.TotalLineCodeCount))
+          .AddPair('totalCommentLineCount', TJSONNumber.Create(Metric.TotalCommentLineCount))
+          .AddPair('totalBlankLineCount', TJSONNumber.Create(Metric.TotalBlankLineCount))
+          .AddPair('totalClassCount', TJSONNumber.Create(Metric.TotalClassCount))
+          .AddPair('totalInterfaceCount', TJSONNumber.Create(Metric.TotalInterfaceCount))
+          .AddPair('totalRecordCount', TJSONNumber.Create(Metric.TotalRecordCount))
+          .AddPair('totalEnumCount', TJSONNumber.Create(Metric.TotalEnumCount))
+          .AddPair('totalPublicMethodCount', TJSONNumber.Create(Metric.TotalPublicMethodCount))
+          .AddPair('totalImplMethodCount', TJSONNumber.Create(Metric.TotalImplMethodCount))
+          .AddPair('totalCyclomaticComplexity', TJSONNumber.Create(Metric.TotalCyclomaticComplexity))
+          .AddPair('analysisTimeMs', TJSONNumber.Create(Metric.AnalysisTimeMs));
+      SeriesArray.AddElement(Item);
     end;
 
     RootJson.AddPair('evolutionSeries', SeriesArray);
 
-    TFile.WriteAllText(AOutputJsonFile, RootJson.ToJSON(), TEncoding.UTF8);
+    TFile.WriteAllText(AOutputJsonFile, RootJson.Format(2), TEncoding.UTF8);
     RootJson.Free;
-  finally
+    EvolutionList.Free;
     if TFile.Exists(TempJsonFile) then
       TFile.Delete(TempJsonFile);
-    EvolutionList.Free;
   end;
 end;
 
