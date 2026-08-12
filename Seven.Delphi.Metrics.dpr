@@ -1,4 +1,4 @@
-program Seven.Delphi.Metrics;
+﻿program Seven.Delphi.Metrics;
 
 uses
   Vcl.Forms,
