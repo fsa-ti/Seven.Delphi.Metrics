@@ -6,10 +6,10 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
-        <ProjectName Condition="'$(ProjectName)'==''">Seven.Builder.Metrics.Tests</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">Seven.Delphi.Metrics.Tests</ProjectName>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
-        <MainSource>Seven.Builder.Metrics.Tests.dpr</MainSource>
+        <MainSource>Seven.Delphi.Metrics.Tests.dpr</MainSource>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -70,7 +70,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">Seven.Builder.Metrics.Tests.dpr</Source>
+                    <Source Name="MainSource">Seven.Delphi.Metrics.Tests.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>

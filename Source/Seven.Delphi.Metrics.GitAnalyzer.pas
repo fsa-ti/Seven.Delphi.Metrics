@@ -218,10 +218,13 @@ var
   OutText: string;
   FullProjectPath: string;
   TempJsonFile: string;
+  DidStash: Boolean;
 begin
   OriginalRef := GetCurrentHead(ARepoPath);
   EvolutionList := TList<TGitEvolutionMetric>.Create;
   TempJsonFile := TPath.Combine(TPath.GetTempPath, 'GitEvolutionTemp_' + TGuid.NewGuid.ToString + '.json');
+
+  DidStash := RunGitCommand(ARepoPath, 'stash --include-untracked', OutText) and not OutText.Contains('No local changes to save');
   try
     if ATagsOnly then
       Revisions := GetGitTags(ARepoPath)
@@ -230,7 +233,6 @@ begin
 
     if Length(Revisions) = 0 then
     begin
-      // Fallback: analyze current working tree as single revision
       SetLength(Revisions, 1);
       Revisions[0].Revision := OriginalRef;
       Revisions[0].AuthorDate := FormatDateTime('yyyy-mm-dd', Now);
@@ -240,11 +242,18 @@ begin
 
     for var RevInfo in Revisions do
     begin
-      // Checkout target revision
       if RevInfo.Revision <> OriginalRef then
         RunGitCommand(ARepoPath, Format('checkout -f %s', [RevInfo.Revision]), OutText);
 
       FullProjectPath := TPath.Combine(ARepoPath, AProjectRelPath);
+      if not TFile.Exists(FullProjectPath) then
+      begin
+        var FoundDprojs := TDirectory.GetFiles(ARepoPath, '*.dproj', TSearchOption.soTopDirectoryOnly);
+        if Length(FoundDprojs) = 0 then
+          FoundDprojs := TDirectory.GetFiles(ARepoPath, '*.dproj', TSearchOption.soAllDirectories);
+        if Length(FoundDprojs) > 0 then
+          FullProjectPath := FoundDprojs[0];
+      end;
 
       if TFile.Exists(FullProjectPath) then
       begin
@@ -268,17 +277,39 @@ begin
                 const FilesArray = JsonObj.GetValue('files') as TJSONArray;
                 if Assigned(FilesArray) then Metric.TotalFiles := FilesArray.Count else Metric.TotalFiles := 0;
 
-                Metric.TotalLineCodeCount := JsonObj.GetValue('totalLineCodeCount').AsType<Int64>;
-                Metric.TotalCommentLineCount := JsonObj.GetValue('totalCommentLineCount').AsType<Int64>;
-                Metric.TotalBlankLineCount := JsonObj.GetValue('totalBlankLineCount').AsType<Int64>;
-                Metric.TotalClassCount := JsonObj.GetValue('totalClassCount').AsType<Int64>;
-                Metric.TotalInterfaceCount := JsonObj.GetValue('totalInterfaceCount').AsType<Int64>;
-                Metric.TotalRecordCount := JsonObj.GetValue('totalRecordCount').AsType<Int64>;
-                Metric.TotalEnumCount := JsonObj.GetValue('totalEnumCount').AsType<Int64>;
-                Metric.TotalPublicMethodCount := JsonObj.GetValue('totalPublicMethodCount').AsType<Int64>;
-                Metric.TotalImplMethodCount := JsonObj.GetValue('totalImplMethodCount').AsType<Int64>;
-                Metric.TotalCyclomaticComplexity := JsonObj.GetValue('totalCyclomaticComplexity').AsType<Int64>;
-                Metric.AnalysisTimeMs := JsonObj.GetValue('totalAnalysisTimeMs').AsType<Double>;
+                var V: TJSONValue;
+                V := JsonObj.GetValue('totalLineCodeCount');
+                if Assigned(V) then Metric.TotalLineCodeCount := StrToInt64Def(V.Value, 0) else Metric.TotalLineCodeCount := 0;
+
+                V := JsonObj.GetValue('totalCommentLineCount');
+                if Assigned(V) then Metric.TotalCommentLineCount := StrToInt64Def(V.Value, 0) else Metric.TotalCommentLineCount := 0;
+
+                V := JsonObj.GetValue('totalBlankLineCount');
+                if Assigned(V) then Metric.TotalBlankLineCount := StrToInt64Def(V.Value, 0) else Metric.TotalBlankLineCount := 0;
+
+                V := JsonObj.GetValue('totalClassCount');
+                if Assigned(V) then Metric.TotalClassCount := StrToInt64Def(V.Value, 0) else Metric.TotalClassCount := 0;
+
+                V := JsonObj.GetValue('totalInterfaceCount');
+                if Assigned(V) then Metric.TotalInterfaceCount := StrToInt64Def(V.Value, 0) else Metric.TotalInterfaceCount := 0;
+
+                V := JsonObj.GetValue('totalRecordCount');
+                if Assigned(V) then Metric.TotalRecordCount := StrToInt64Def(V.Value, 0) else Metric.TotalRecordCount := 0;
+
+                V := JsonObj.GetValue('totalEnumCount');
+                if Assigned(V) then Metric.TotalEnumCount := StrToInt64Def(V.Value, 0) else Metric.TotalEnumCount := 0;
+
+                V := JsonObj.GetValue('totalPublicMethodCount');
+                if Assigned(V) then Metric.TotalPublicMethodCount := StrToInt64Def(V.Value, 0) else Metric.TotalPublicMethodCount := 0;
+
+                V := JsonObj.GetValue('totalImplMethodCount');
+                if Assigned(V) then Metric.TotalImplMethodCount := StrToInt64Def(V.Value, 0) else Metric.TotalImplMethodCount := 0;
+
+                V := JsonObj.GetValue('totalCyclomaticComplexity');
+                if Assigned(V) then Metric.TotalCyclomaticComplexity := StrToInt64Def(V.Value, 0) else Metric.TotalCyclomaticComplexity := 0;
+
+                V := JsonObj.GetValue('totalAnalysisTimeMs');
+                if Assigned(V) then Metric.AnalysisTimeMs := StrToFloatDef(V.Value, 0.0) else Metric.AnalysisTimeMs := 0.0;
 
                 EvolutionList.Add(Metric);
               finally
@@ -291,9 +322,11 @@ begin
         end;
       end;
     end;
-
-    // Restore original branch
+  finally
     RunGitCommand(ARepoPath, Format('checkout -f %s', [OriginalRef]), OutText);
+    if DidStash then
+      RunGitCommand(ARepoPath, 'stash pop', OutText);
+  end;
 
     // Save final evolution JSON
     const RootJson = TJSONObject.Create();

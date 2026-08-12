@@ -1,4 +1,4 @@
-program Seven.Builder.Metrics.Tests;
+program Seven.Delphi.Metrics.Tests;
 
 {$APPTYPE CONSOLE}
 
@@ -9,11 +9,12 @@ uses
   Winapi.ActiveX,
   DUnitX.Loggers.Console,
   DUnitX.TestFramework,
-  Seven.Builder.AnalyticsAndMetrics.GitAnalyzer in '..\Source\Seven.Builder.AnalyticsAndMetrics.GitAnalyzer.pas',
-  Seven.Builder.AnalyticsAndMetrics.ProjectParser in '..\Source\Seven.Builder.AnalyticsAndMetrics.ProjectParser.pas',
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer in '..\Source\Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer.pas',
-  Seven.Builder.AnalyticsAndMetrics in '..\Source\Seven.Builder.AnalyticsAndMetrics.pas',
-  Seven.Builder.AnalyticsAndMetrics.SaveService in '..\Source\Seven.Builder.AnalyticsAndMetrics.SaveService.pas',
+  Seven.Delphi.Metrics.GitAnalyzer in '..\Source\Seven.Delphi.Metrics.GitAnalyzer.pas',
+  Seven.Delphi.Metrics.ProjectParser in '..\Source\Seven.Delphi.Metrics.ProjectParser.pas',
+  Seven.Delphi.Metrics.CodeAnalyzer in '..\Source\Seven.Delphi.Metrics.CodeAnalyzer.pas',
+  Seven.Delphi.Metrics.Engine in '..\Source\Seven.Delphi.Metrics.Engine.pas',
+  Seven.Delphi.Metrics.SaveService in '..\Source\Seven.Delphi.Metrics.SaveService.pas',
+  Seven.Delphi.Metrics.PresetService in '..\Source\Seven.Delphi.Metrics.PresetService.pas',
   Test.CodeAnalyzer in 'Test.CodeAnalyzer.pas';
 
 var
@@ -35,6 +36,6 @@ begin
     if not results.AllPassed then
       System.ExitCode := 1;
   finally
-    CoUninitialize();
+    CoUninitialize;
   end;
 end.
