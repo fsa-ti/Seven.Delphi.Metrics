@@ -1,0 +1,7 @@
+[Postgres]
+Server=localhost
+Port=5434
+Database=Metricas
+User=postgres
+Password=123456
+Description=Data7 Matriz

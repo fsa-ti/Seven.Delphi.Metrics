@@ -1,28 +1,28 @@
-# Documentação do Projeto: Gerador de Versão e Métricas de Código Delphi
+# Status do Projeto e Planejamento de Melhorias
 
-## 1. Visão Geral
-Este documento tem como finalidade registrar o estado atual do projeto **GeradorVersaoMetricasCodigo**, o levantamento técnico dos componentes existentes, o planejamento de melhorias e o histórico de etapas executadas.
-
-- **Objetivo**: Fornecer métricas estáticas de código para projetos Delphi (`.pas`, `.dpr`, `.dpk`), permitindo analisar tanto arquivos individuais quanto projetos inteiros (`.dproj`) e grupos de projetos (`.groupproj`), com foco em rastrear a evolução das métricas do código ao longo do histórico do repositório Git.
-- **Mecanismo de Parse**: Utiliza uma versão customizada/fork do `DelphiAST` situada em `Terceiros\DelphiAST`.
+## 1. Resumo Executivo
+O projeto **GeradorVersaoMetricasCodigo** é uma ferramenta para análise estática de código-fonte Delphi (Object Pascal). Ele utiliza o DelphiAST (localizado em `Terceiros/DelphiAST`) para extrair a Árvore Sintática Abstrata (AST) e contabilizar estatísticas como linhas de código (LOC), comentários, linhas em branco, estruturas orientadas a objetos, contagem de procedimentos/funções na seção `IMPLEMENTATION`, **Complexidade Ciclomática (McCabe - MCC)**, relatórios de **Evolução Temporal via repositório Git**, **DashboardsVisuais em HTML** e **Interface de Linha de Comando (CLI)** para esteiras CI/CD.
 
 ---
 
-## 2. Levantamento Técnico (Estado Atual do Projeto)
+## 2. Estrutura Atual da Solução
 
-### Arquitetura Atual
-```
+```text
 GeradorVersaoMetricasCodigo/
-├── Seven.Builder.Metrics.dpr       # Executável de entrada principal
+├── Seven.Builder.Metrics.dpr                             # Programa Principal / CLI (Entrada de Análise)
+├── Seven.Builder.Metrics.dproj                           # Projeto Delphi 12 (Win64)
+├── GeradorVersaoMetricasCodigo1.groupproj               # Grupo de Projetos
+├── db_config.ini.example                                 # Exemplo de configuração de banco de dados
 ├── Source/
 │   ├── Seven.Builder.AnalyticsAndMetrics.pas            # Fachada de Análise (File/Project Analysis)
-│   ├── Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer.pas # Mecanismo de contagem de linhas, AST e MCC
+│   ├── Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer.pas # Mecanismo de contagem de linhas, AST, MCC e Tolerância a Falhas
 │   ├── Seven.Builder.AnalyticsAndMetrics.ProjectParser.pas# Parser especializado para .dproj e .groupproj
 │   ├── Seven.Builder.AnalyticsAndMetrics.GitAnalyzer.pas  # Analisador de histórico e evolução via Git
-│   └── Seven.Builder.AnalyticsAndMetrics.SaveService.pas  # Serviços de persistência (JSON e Breeze/PostgreSQL)
+│   ├── Seven.Builder.AnalyticsAndMetrics.HtmlReportGenerator.pas # Gerador de Dashboard HTML Interativo (Dark Mode)
+│   └── Seven.Builder.AnalyticsAndMetrics.SaveService.pas  # Serviços de persistência (JSON e PostgreSQL via INI)
 ├── Tests/
-│   ├── Seven.Builder.Metrics.Tests.dpr                   # Suíte de testes automatizados DUnitX
-│   └── Test.CodeAnalyzer.pas                              # Fixture de testes unitários (9 cenários ativos)
+│   ├── Seven.Builder.Metrics.Tests.dpr                   # Suíte de testes automatizados DUnitX (10 testes)
+│   └── Test.CodeAnalyzer.pas                              # Fixture de testes unitários (10/10 aprovados)
 ├── docs/
 │   ├── STATUS_E_PLANEJAMENTO.md                           # Documentação e controle de roadmap
 │   └── ESTRUTURA_BANCO_DE_DADOS.md                        # Mapeamento do esquema relacional e scripts DDL SQL
@@ -31,60 +31,36 @@ GeradorVersaoMetricasCodigo/
     └── Breeze/                     # Biblioteca ORM/Client de Banco de Dados
 ```
 
-### Funcionalidades Implementadas
+---
 
-1. **Análise Sintática e Métrica de Código (`.pas`, `.dpr`, `.dpk`, `.inc`)**:
-   - Contagem de linhas totais, em branco e comentários.
-   - Parse sintático completo (seções `INTERFACE` e `IMPLEMENTATION`).
-   - Consultas XPath e AST para extração de:
-     - Classes, Interfaces, Records, Enums.
-     - Métodos públicos, privados, protegidos, estáticos e implementados (`ImplMethodCount`).
-     - Complexidade Ciclomática (MCC - McCabe Cyclomatic Complexity) contabilizando pontos de decisão (`if`, `case`, `while`, `for`, `repeat`, `except`, `and`, `or`).
-     - Propriedades de classe, record e interface.
-     - Funções, variáveis e constantes globais.
+## 3. Matriz de Funcionalidades e Status (100% Concluído)
 
-2. **Suporte a Projetos e Grupos de Projetos (`.dproj` e `.groupproj`)**:
-   - Módulo `Seven.Builder.AnalyticsAndMetrics.ProjectParser.pas`.
-   - Leitura recursiva de grupos de projetos (`.groupproj`) extraindo todos os `.dproj` internos e seus arquivos fontes.
-   - Resolução de caminhos relativos e expansão de variáveis do MSBuild (ex: `$(PROJECTDIR)`).
-
-3. **Análise de Evolução Temporal em Repositórios Git**:
-   - Módulo `Seven.Builder.AnalyticsAndMetrics.GitAnalyzer.pas`.
-   - Comunicação nativa com `git.exe` para listar commits e tags.
-   - Execução de checkout temporário e varredura de histórico, gerando a série temporal completa em formato JSON (`git_evolution_metrics.json`).
-
-4. **Exportação de Dados Detalhada (JSON e PostgreSQL/Breeze)**:
-   - Gravação de totais agregados e do detalhamento completo fonte a fonte (`files: [{ fileName, lineCodeCount, classCount, implMethodCount, cyclomaticComplexity, ... }]`).
-
-5. **Suíte de Testes Automatizados (DUnitX)**:
-   - Projeto [`Tests/Seven.Builder.Metrics.Tests.dproj`](file:///d:/git/laboratorio/GeradorVersaoMetricasCodigo/Tests/Seven.Builder.Metrics.Tests.dproj).
-   - **9 cenários de testes unitários**, cobrindo: contagem de linhas, AST, JSON export, `.dproj` parser, `.groupproj` parser, seção `IMPLEMENTATION`, Complexidade Ciclomática, leitura de refs Git e geração de série temporal de evolução Git.
-   - **100% de testes aprovados**.
+| Etapa | Recurso / Funcionalidade | Arquivos Principais | Status |
+|---|---|---|---|
+| **Etapa 1** | Levantamento da Arquitetura & Documentação | `docs/STATUS_E_PLANEJAMENTO.md` | **Concluído** |
+| **Etapa 2** | Suíte de Testes Automatizados DUnitX | `Tests/Seven.Builder.Metrics.Tests.dproj` | **Concluído (10/10 Aprovados)** |
+| **Etapa 3** | Exportação JSON Estruturada com arquivos individuais | `SaveService.pas` | **Concluído** |
+| **Etapa 4** | Parser Recursivo de `.dproj` e `.groupproj` | `ProjectParser.pas` | **Concluído** |
+| **Etapa 5** | Métricas da Seção `IMPLEMENTATION` e Complexidade Ciclomática | `CodeAnalyzer.pas` | **Concluído** |
+| **Etapa 6** | Análise de Evolução Histórica no Repositório Git | `GitAnalyzer.pas` | **Concluído** |
+| **Etapa 7** | Configuração Externa de DB (`db_config.ini`) | `SaveService.pas`, `db_config.ini.example` | **Concluído** |
+| **Etapa 8** | Resiliência a Falhas no AST (`ParseError`) | `CodeAnalyzer.pas` | **Concluído** |
+| **Etapa 9** | Gerador de Dashboards Visuais HTML Interativos | `HtmlReportGenerator.pas` | **Concluído** |
+| **Etapa 10** | Interface de Linha de Comando (CLI) para Automação CI/CD | `Seven.Builder.Metrics.dpr` | **Concluído** |
 
 ---
 
-## 3. Roadmap de Melhorias
+## 4. Manual de Uso da CLI
 
-| Etapa | Descrição | Status |
-|---|---|---|
-| **Etapa 1** | Levantamento do estado atual e criação da documentação `.md` | ✅ **Concluído** |
-| **Etapa 2** | Criação da suíte de testes unitários automatizados (DUnitX) | ✅ **Concluído** |
-| **Etapa 3** | Refatoração do núcleo (remover hardcodes, salvar métricas por arquivo no JSON) | ✅ **Concluído** |
-| **Etapa 4** | Implementação de Parsers para `.dproj` e `.groupproj` | ✅ **Concluído** |
-| **Etapa 5** | Expansão de análise sintática para seção `IMPLEMENTATION` e complexidade ciclomática | ✅ **Concluído** |
-| **Etapa 6** | Integração com repositório Git para métricas por período/evolução | ✅ **Concluído** |
+O executável `Seven.Builder.Metrics.exe` pode ser invocado via linha de comando ou em esteiras de integração contínua (CI/CD):
 
----
+```bash
+# 1. Análise de projeto (.dproj / .groupproj) com saída em JSON e Dashboard HTML:
+Seven.Builder.Metrics.exe -project "C:\Data7\Sistema.dproj" -out "metricas.json" -html "dashboard.html"
 
-## 4. Registro de Alterações (Log de Atividades)
-- **11/08/2026**:
-  - Realizado o levantamento completo do código fonte nas pastas `Source` e `Terceiros`.
-  - Compilação do projeto verificada com sucesso usando Delphi 12 Athens (MSBuild / `dcc64`).
-  - Criada a suíte de testes unitários com DUnitX em `Tests/Seven.Builder.Metrics.Tests.dproj`.
-  - Resolvido problema de inicialização do COM (`CoInitialize`) na suíte de testes em modo console.
-  - Removido caminho temporário hardcoded (`D:\Temp\XmlContent.xml`) do analisador de código.
-  - Atualizado o exportador JSON para incluir métricas detalhadas arquivo por arquivo no nó `files`.
-  - Criada a unidade `Seven.Builder.AnalyticsAndMetrics.ProjectParser.pas` para suporte a `.dproj` e `.groupproj`.
-  - Adicionado suporte à seção `IMPLEMENTATION` (`ImplMethodCount`) e cálculo da Complexidade Ciclomática (MCC).
-  - Desenvolvida a unidade `Seven.Builder.AnalyticsAndMetrics.GitAnalyzer.pas` para análise de evolução histórica via Git.
-  - Suíte de testes expandida para 9 testes unitários com 100% de taxa de sucesso.
+# 2. Análise de evolução no repositório Git com limite de 15 commits:
+Seven.Builder.Metrics.exe -git "C:\RepoGit" -project "Sistema.dproj" -out "evolucao.json" -html "evolucao.html" -commits 15
+
+# 3. Análise com gravação direta no Banco de Dados PostgreSQL (usando db_config.ini):
+Seven.Builder.Metrics.exe -project "C:\Data7\Sistema.dproj" -db -version "2.5.0"
+```
