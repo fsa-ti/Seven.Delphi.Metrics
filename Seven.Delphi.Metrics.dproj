@@ -6,10 +6,10 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win64</Platform>
-        <ProjectName Condition="'$(ProjectName)'==''">Seven.Builder.Metrics</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">Seven.Delphi.Metrics</ProjectName>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Application</AppType>
-        <MainSource>Seven.Builder.Metrics.dpr</MainSource>
+        <MainSource>Seven.Delphi.Metrics.dpr</MainSource>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -70,7 +70,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
-        <SanitizedProjectName>Seven_Builder_Metrics</SanitizedProjectName>
+        <SanitizedProjectName>Seven_Delphi_Metrics</SanitizedProjectName>
         <DCC_UnitSearchPath>Terceiros\DelphiAST;Terceiros\DelphiAST\SimpleParser;Terceiros\Breeze\Database\Interfaces\Redist;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1046</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -131,9 +131,18 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Source\Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer.pas"/>
-        <DCCReference Include="Source\Seven.Builder.AnalyticsAndMetrics.pas"/>
-        <DCCReference Include="Source\Seven.Builder.AnalyticsAndMetrics.SaveService.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.CodeAnalyzer.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.Engine.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.GitAnalyzer.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.HistoryService.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.HtmlHelpGenerator.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.HtmlReportGenerator.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.ProjectParser.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.SaveService.pas"/>
+        <DCCReference Include="Source\Seven.Delphi.Metrics.UI.Main.pas">
+            <Form>FormMainMetrics</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -152,7 +161,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">Seven.Builder.Metrics.dpr</Source>
+                    <Source Name="MainSource">Seven.Delphi.Metrics.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclFireDAC290.bpl">Embarcadero FireDAC Components</Excluded_Packages>
@@ -235,21 +244,21 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\Seven_Builder_Metrics.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\Seven_Delphi_Metrics.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>Seven_Builder_Metrics.exe</RemoteName>
+                        <RemoteName>Seven_Delphi_Metrics.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\Seven.Builder.Metrics.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win64\Debug\Seven.Delphi.Metrics.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Seven.Builder.Metrics.exe</RemoteName>
+                        <RemoteName>Seven.Delphi.Metrics.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Debug\Seven.Builder.Metrics.rsm" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile LocalName="Win64\Debug\Seven.Delphi.Metrics.rsm" Configuration="Debug" Class="DebugSymbols">
                     <Platform Name="Win64">
-                        <RemoteName>Seven.Builder.Metrics.rsm</RemoteName>
+                        <RemoteName>Seven.Delphi.Metrics.rsm</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -1,4 +1,4 @@
-unit Seven.Delphi.Metrics.Engine;
+﻿unit Seven.Delphi.Metrics.Engine;
 
 interface
 

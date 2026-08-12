@@ -1,4 +1,4 @@
-program Seven.Builder.Metrics;
+program Seven.Delphi.Metrics;
 
 uses
   Vcl.Forms,
@@ -6,13 +6,15 @@ uses
   System.IOUtils,
   Winapi.Windows,
   Winapi.ActiveX,
-  Seven.Builder.Metrics.UI.Main in 'Source\Seven.Builder.Metrics.UI.Main.pas' {FormMainMetrics},
-  Seven.Builder.AnalyticsAndMetrics.GitAnalyzer in 'Source\Seven.Builder.AnalyticsAndMetrics.GitAnalyzer.pas',
-  Seven.Builder.AnalyticsAndMetrics.ProjectParser in 'Source\Seven.Builder.AnalyticsAndMetrics.ProjectParser.pas',
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer in 'Source\Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer.pas',
-  Seven.Builder.AnalyticsAndMetrics.HtmlReportGenerator in 'Source\Seven.Builder.AnalyticsAndMetrics.HtmlReportGenerator.pas',
-  Seven.Builder.AnalyticsAndMetrics in 'Source\Seven.Builder.AnalyticsAndMetrics.pas',
-  Seven.Builder.AnalyticsAndMetrics.SaveService in 'Source\Seven.Builder.AnalyticsAndMetrics.SaveService.pas';
+  Seven.Delphi.Metrics.CodeAnalyzer in 'Source\Seven.Delphi.Metrics.CodeAnalyzer.pas',
+  Seven.Delphi.Metrics.Engine in 'Source\Seven.Delphi.Metrics.Engine.pas',
+  Seven.Delphi.Metrics.GitAnalyzer in 'Source\Seven.Delphi.Metrics.GitAnalyzer.pas',
+  Seven.Delphi.Metrics.HistoryService in 'Source\Seven.Delphi.Metrics.HistoryService.pas',
+  Seven.Delphi.Metrics.HtmlHelpGenerator in 'Source\Seven.Delphi.Metrics.HtmlHelpGenerator.pas',
+  Seven.Delphi.Metrics.HtmlReportGenerator in 'Source\Seven.Delphi.Metrics.HtmlReportGenerator.pas',
+  Seven.Delphi.Metrics.ProjectParser in 'Source\Seven.Delphi.Metrics.ProjectParser.pas',
+  Seven.Delphi.Metrics.SaveService in 'Source\Seven.Delphi.Metrics.SaveService.pas',
+  Seven.Delphi.Metrics.UI.Main in 'Source\Seven.Delphi.Metrics.UI.Main.pas' {FormMainMetrics};
 
 {$R *.res}
 
@@ -43,7 +45,7 @@ end;
 procedure PrintHelp;
 begin
   Writeln('=== Seven Builder Metrics - CLI ===');
-  Writeln('Uso: Seven.Builder.Metrics.exe [opcoes]');
+  Writeln('Uso: Seven.Delphi.Metrics.exe [opcoes]');
   Writeln('');
   Writeln('Opcoes:');
   Writeln('  -project, -p <path>   Caminho para o arquivo .dproj ou .groupproj');
