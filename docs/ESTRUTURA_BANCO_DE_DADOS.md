@@ -141,4 +141,10 @@ CREATE TABLE IF NOT EXISTS ArquivoMetricaCodigo (
     EstacaoTrabalhoInclusao VARCHAR(100),
     VersaoInlcusao VARCHAR(50)
 );
+
+-- Índices de Performance Recomendados
+CREATE INDEX IF NOT EXISTS idx_metricacodigo_versao ON MetricaCodigo(Versao);
+CREATE INDEX IF NOT EXISTS idx_metricacodigo_dataversao ON MetricaCodigo(DataVersao);
+CREATE INDEX IF NOT EXISTS idx_arquivometricacodigo_codmetrica ON ArquivoMetricaCodigo(CodMetricaCodigo);
+CREATE INDEX IF NOT EXISTS idx_arquivometricacodigo_nomearquivo ON ArquivoMetricaCodigo(NomeArquivo);
 ```
