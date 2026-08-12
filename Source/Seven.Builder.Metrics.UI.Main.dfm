@@ -4,7 +4,7 @@ object FormMainMetrics: TFormMainMetrics
   Caption = 'Seven Builder Metrics - Análise Estática de Código Delphi'
   ClientHeight = 720
   ClientWidth = 980
-  Color = clSlate
+  Color = 2825487
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
