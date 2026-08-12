@@ -1,10 +1,10 @@
-unit Seven.Builder.AnalyticsAndMetrics;
+unit Seven.Delphi.Metrics.Engine;
 
 interface
 
 uses
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics.ProjectParser;
+  Seven.Delphi.Metrics.CodeAnalyzer,
+  Seven.Delphi.Metrics.ProjectParser;
 
 type
   TSevenAnalyticsAndMetrics = class

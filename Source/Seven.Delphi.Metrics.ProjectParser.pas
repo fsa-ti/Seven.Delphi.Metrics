@@ -1,4 +1,4 @@
-unit Seven.Builder.AnalyticsAndMetrics.ProjectParser;
+unit Seven.Delphi.Metrics.ProjectParser;
 
 interface
 

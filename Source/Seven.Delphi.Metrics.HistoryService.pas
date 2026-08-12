@@ -1,4 +1,4 @@
-unit Seven.Builder.AnalyticsAndMetrics.HistoryService;
+unit Seven.Delphi.Metrics.HistoryService;
 
 interface
 

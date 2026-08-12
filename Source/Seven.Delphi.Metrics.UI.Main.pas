@@ -1,4 +1,4 @@
-unit Seven.Builder.Metrics.UI.Main;
+unit Seven.Delphi.Metrics.UI.Main;
 
 interface
 
@@ -19,12 +19,14 @@ uses
   Vcl.StdCtrls,
   Vcl.ExtCtrls,
   Vcl.ComCtrls,
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics.ProjectParser,
-  Seven.Builder.AnalyticsAndMetrics.GitAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics.HtmlReportGenerator,
-  Seven.Builder.AnalyticsAndMetrics,
-  Seven.Builder.AnalyticsAndMetrics.SaveService;
+  Seven.Delphi.Metrics.CodeAnalyzer,
+  Seven.Delphi.Metrics.ProjectParser,
+  Seven.Delphi.Metrics.GitAnalyzer,
+  Seven.Delphi.Metrics.HtmlReportGenerator,
+  Seven.Delphi.Metrics.HtmlHelpGenerator,
+  Seven.Delphi.Metrics.HistoryService,
+  Seven.Delphi.Metrics.Engine,
+  Seven.Delphi.Metrics.SaveService;
 
 type
   TTargetType = (ttProject, ttGroupProject, ttDirectory);
@@ -125,7 +127,7 @@ procedure TFormMainMetrics.FormCreate(Sender: TObject);
 begin
   dtpVersionDate.DateTime := Now;
   const ExeDir = ExtractFilePath(ParamStr(0));
-  edtTargetPath.Text := TPath.GetFullPath(TPath.Combine(ExeDir, '..\..\Seven.Builder.Metrics.dproj'));
+  edtTargetPath.Text := TPath.GetFullPath(TPath.Combine(ExeDir, '..\..\Seven.Delphi.Metrics.dproj'));
   edtJsonPath.Text := TPath.Combine(ExeDir, 'MetricasOutput.json');
   edtHtmlPath.Text := TPath.Combine(ExeDir, 'DashboardOutput.html');
   edtGitRepoPath.Text := TPath.GetFullPath(TPath.Combine(ExeDir, '..\..\..\'));

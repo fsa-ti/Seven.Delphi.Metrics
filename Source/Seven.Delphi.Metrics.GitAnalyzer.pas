@@ -1,4 +1,4 @@
-unit Seven.Builder.AnalyticsAndMetrics.GitAnalyzer;
+unit Seven.Delphi.Metrics.GitAnalyzer;
 
 interface
 
@@ -8,9 +8,8 @@ uses
   System.IOUtils,
   System.JSON,
   System.Generics.Collections,
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer,
-  Seven.Builder.AnalyticsAndMetrics.SaveService,
-  Seven.Builder.AnalyticsAndMetrics;
+  Seven.Delphi.Metrics.CodeAnalyzer,
+  Seven.Delphi.Metrics.SaveService;
 
 type
   TGitRevisionInfo = record
@@ -52,7 +51,8 @@ type
 implementation
 
 uses
-  Winapi.Windows;
+  Winapi.Windows,
+  Seven.Delphi.Metrics.Engine;
 
 class function TGitAnalyzer.RunGitCommand(const AWorkingDir, Args: string; out Output: string): Boolean;
 var

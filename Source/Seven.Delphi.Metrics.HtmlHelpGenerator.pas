@@ -1,4 +1,4 @@
-unit Seven.Builder.AnalyticsAndMetrics.HtmlHelpGenerator;
+unit Seven.Delphi.Metrics.HtmlHelpGenerator;
 
 interface
 
@@ -133,7 +133,7 @@ begin
     '        <div class="card">' + sLineBreak +
     '          <h3><span><span class="step-number">3</span> Execu&ccedil;&atilde;o em 1-Clique ou CLI</span></h3>' + sLineBreak +
     '          <p>Clique no bot&atilde;o <b>EXECUTAR AN&Aacute;LISE EST&Aacute;TICA DE C&Oacute;DIGO</b> na interface visual, ou execute via terminal:</p>' + sLineBreak +
-    '          <pre>Seven.Builder.Metrics.exe -project "C:\\MeuProjeto.dproj" -html "C:\\Relatorio.html" -db</pre>' + sLineBreak +
+    '          <pre>Seven.Delphi.Metrics.exe -project "C:\\MeuProjeto.dproj" -html "C:\\Relatorio.html" -db</pre>' + sLineBreak +
     '        </div>' + sLineBreak +
     '      </div>' + sLineBreak +
     '    </div>' + sLineBreak +

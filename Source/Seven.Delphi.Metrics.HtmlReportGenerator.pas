@@ -1,4 +1,4 @@
-unit Seven.Builder.AnalyticsAndMetrics.HtmlReportGenerator;
+unit Seven.Delphi.Metrics.HtmlReportGenerator;
 
 interface
 

@@ -3,7 +3,7 @@
 // Pequenas modificações Fernando
 // 15/05/2025
 // Baseado do arquivo original "Seven.OpenToolsAPI.AnalyticsAndMetrics.CodeAnalyzer"
-unit Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer;
+unit Seven.Delphi.Metrics.CodeAnalyzer;
 
 interface
 

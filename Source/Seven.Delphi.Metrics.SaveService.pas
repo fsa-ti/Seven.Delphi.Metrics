@@ -1,9 +1,9 @@
-unit Seven.Builder.AnalyticsAndMetrics.SaveService;
+unit Seven.Delphi.Metrics.SaveService;
 
 interface
 
 uses
-  Seven.Builder.AnalyticsAndMetrics.CodeAnalyzer;
+  Seven.Delphi.Metrics.CodeAnalyzer;
 
 type
   TSaveServiceFileFactory = record
